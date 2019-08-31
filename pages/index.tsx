@@ -1,33 +1,16 @@
-import { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import { Scene, AmbientLight, PointLight } from 'three';
 
 import Layout from '../components/Layout';
-import Renderer from '../components/Renderer';
+import Display from '../components/Display';
 import Controls from '../components/Controls';
-import { Planet } from '../models/planet';
+import { useEventShare } from '../hooks/use-event-share';
+import PlanetSettings from '../models/planet-settings';
 
 
 export default () => {
+    const controlChanges = useEventShare<PlanetSettings>();
     
-    let planet: Planet;
-    const initScene = (scene: Scene, renderer, context) => {
-        console.log(`Initializing scene...`);
-        planet = new Planet();
-        planet.radius = 1;
-        planet.resolution = 8;
-        planet.wireframes = true;
-
-        planet.initialize();
-        scene.add(planet);
-    };
-
-    const updateScene = (deltaT: number, scene: Scene, renderer, context) => {
-        planet.rotation.y = deltaT * 0.5;
-    };
-
     return (
         <Layout>
             <Row>
@@ -37,10 +20,10 @@ export default () => {
             </Row>
             <Row style={{height: ""}}>
                 <Col xs={9} className="display">
-                    <Renderer initScene={initScene} updateScene={updateScene} />
+                    <Display controlChanges={controlChanges} />
                 </Col>
                 <Col xs={3} className="controls">
-                    <Controls />
+                    <Controls controlChanges={controlChanges} />
                 </Col>
             </Row>
         </Layout>)

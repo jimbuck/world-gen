@@ -3,6 +3,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import PlanetSettings from '../models/planet-settings';
+import { EventShare } from '../hooks/use-event-share';
 
 const controls = {
     seedInput: 'seedInput',
@@ -11,8 +13,9 @@ const controls = {
     radiusSlider: 'radiusSlider',
 }
 
-export default (props) => {
-    const [seed, setSeed] = useState(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) => {
+    console.log(`Rendering Controls...`);
+    const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [resolution, setResolution] = useState(8);
     const [radius, setRadius] = useState(1);
@@ -30,8 +33,7 @@ export default (props) => {
                             <Form.Control type="input" value={seed+''} onChange={handleFormChange} />
                         </Form.Group>
                         <Form.Group controlId={controls.autoUpdateCheckbox}>
-                            <Form.Label>Auto-Update: {autoUpdate}</Form.Label>
-                            <Form.Check type='checkbox' checked={autoUpdate} onChange={handleFormChange} />
+                            <Form.Check type='checkbox' label='Auto Update' checked={autoUpdate} onChange={handleFormChange} />
                         </Form.Group>
                         <Form.Group controlId={controls.radiusSlider}>
                             <Form.Label>Radius: {radius}</Form.Label>
@@ -41,7 +43,7 @@ export default (props) => {
                             <Form.Label>Resolution: {resolution}</Form.Label>
                             <Form.Control type="range" min={1} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
                         </Form.Group>
-                        {autoUpdate ? null : <Button block>Update</Button>}
+                        {autoUpdate ? null : <Button block onClick={emitChanges}>Update</Button>}
                     </Form>
                 </Col>
             </Row>
@@ -63,5 +65,13 @@ export default (props) => {
                 setRadius(parseFloat(e.target.value));
                 break;
         }
+
+        if(autoUpdate) {
+            emitChanges();
+        }
+    }
+
+    function emitChanges() {
+        controlChanges.emit({ seed, resolution, radius });
     }
 }

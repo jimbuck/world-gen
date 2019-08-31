@@ -7,7 +7,6 @@ import { directionsList } from './direction';
 export class Planet extends Group {
     private planetFaces: PlanetFace[] = [];
 
-    public autoUpdate: boolean;
     public wireframes: boolean;
     public resolution: number;
     public radius: number;
@@ -21,20 +20,14 @@ export class Planet extends Group {
 
     public onShapeSettingsUpdated()
     {
-        if (this.autoUpdate)
-        {
-            this.init();
-            this.generateMesh();
-        }
+        this.init();
+        this.generateMesh();
     }
 
     public onColorSettingsUpdated()
     {
-        if (this.autoUpdate)
-        {
-            this.init();
-            this.generateColors();
-        }
+        this.init();
+        this.generateColors();
     }
 
     private init() {
@@ -42,26 +35,23 @@ export class Planet extends Group {
             color: '#aaaaaa',
             specular: '#ffffff'
         });
-        
+        this.remove(...this.children);
         for (let i = 0; i < 6; i++) {
-            if (!this.planetFaces[i]) {
-                
-                const surface = new Mesh(new Geometry(), material);
+            const surface = new Mesh(new Geometry(), material);
 
-                this.planetFaces[i] = new PlanetFace(surface, this.resolution, this.radius, directionsList[i]);
-                this.add(this.planetFaces[i]);
-            }
+            this.planetFaces[i] = new PlanetFace(surface, directionsList[i]);
+            this.add(this.planetFaces[i]);
         }
     }
 
     private generateMesh() {
         this.planetFaces.forEach(face => {
-            face.BuildMesh();
+            face.BuildMesh(this.resolution, this.radius);
             if (this.wireframes) face.BuildWireframes();
         })
     }
 
     private generateColors() {
-
+        
     }
 }
