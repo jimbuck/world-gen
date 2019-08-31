@@ -1,53 +1,67 @@
 
-import { Vector3, Material, Mesh, Geometry, Group, WireframeGeometry, LineSegments } from 'three';
+import { MeshPhongMaterial, Group, Mesh, Geometry} from 'three';
 import { PlanetFace } from './planet-face';
 
-const directions = [
-    new Vector3(0, 1, 0), // UP
-    new Vector3(0, -1, 0), // DOWN
-    new Vector3(-1, 0, 0), // LEFT
-    new Vector3(1, 0, 0), // RIGHT
-    new Vector3(0, 0, 1), // FORWARD
-    new Vector3(0, 0, -1)  // BACK
-];
+import { directionsList } from './direction';
 
 export class Planet extends Group {
-
-    private meshes: Mesh[] = [];
     private planetFaces: PlanetFace[] = [];
 
-    public constructor(
-        public resolution: number,
-        material: Material
-    ) {
-        super();
-        
-        this.Init(material);
-        this.BuildMesh();
+    public autoUpdate: boolean;
+    public wireframes: boolean;
+    public resolution: number;
+    public radius: number;
+
+    public initialize()
+    {
+        this.init();
+        this.generateMesh();
+        this.generateColors();
     }
 
-    private Init(material: Material) {
-        
-        for (let i = 0; i < 6; i++) {
-            if (!this.meshes[i]) {
-                this.meshes[i] = new Mesh(new Geometry(), material);
-                this.meshes[i].parent = this;
-                this.add(this.meshes[i]);
-            }
-
-            this.planetFaces[i] = new PlanetFace(this.meshes[i].geometry as Geometry, this.resolution, directions[i]);
-
-            const wireframe = new WireframeGeometry( this.meshes[i].geometry as Geometry );
-            var line = new LineSegments(wireframe);
-            (line.material as Material).depthTest = false;
-            (line.material as Material).opacity = 0.25;
-            (line.material as Material).transparent = true;
-
-            this.add(line);
+    public onShapeSettingsUpdated()
+    {
+        if (this.autoUpdate)
+        {
+            this.init();
+            this.generateMesh();
         }
     }
 
-    private BuildMesh() {
-        this.planetFaces.forEach(face => face.BuildMesh());
+    public onColorSettingsUpdated()
+    {
+        if (this.autoUpdate)
+        {
+            this.init();
+            this.generateColors();
+        }
+    }
+
+    private init() {
+        const material = new MeshPhongMaterial({
+            color: '#aaaaaa',
+            specular: '#ffffff'
+        });
+        
+        for (let i = 0; i < 6; i++) {
+            if (!this.planetFaces[i]) {
+                
+                const surface = new Mesh(new Geometry(), material);
+
+                this.planetFaces[i] = new PlanetFace(surface, this.resolution, this.radius, directionsList[i]);
+                this.add(this.planetFaces[i]);
+            }
+        }
+    }
+
+    private generateMesh() {
+        this.planetFaces.forEach(face => {
+            face.BuildMesh();
+            if (this.wireframes) face.BuildWireframes();
+        })
+    }
+
+    private generateColors() {
+
     }
 }

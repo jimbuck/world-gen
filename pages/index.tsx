@@ -1,38 +1,31 @@
+import { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-import { Mesh, BoxGeometry, MeshBasicMaterial, 
-    Scene, AmbientLight, PointLight, MeshPhongMaterial, Vector3 } from 'three';
+import Form from 'react-bootstrap/Form';
+import { Scene, AmbientLight, PointLight } from 'three';
 
 import Layout from '../components/Layout';
 import Renderer from '../components/Renderer';
+import Controls from '../components/Controls';
 import { Planet } from '../models/planet';
 
+
 export default () => {
+    
     let planet: Planet;
     const initScene = (scene: Scene, renderer, context) => {
-        let material = new MeshPhongMaterial({
-            color: '#1c17a6',
-            specular: '#ffffff'
-        });
+        console.log(`Initializing scene...`);
+        planet = new Planet();
+        planet.radius = 1;
+        planet.resolution = 8;
+        planet.wireframes = true;
 
-        planet = new Planet(16, material);
-        planet.position.x = planet.position.y = planet.position.z = 0;
+        planet.initialize();
         scene.add(planet);
-
-        const ambientLight = new AmbientLight('#ffffff', 0.5)
-        scene.add(ambientLight);
-
-        const pointLight = new PointLight('#ffffff', 1.0)
-        pointLight.position.set(5, 10, 5)
-        scene.add(pointLight);
     };
 
-    const updateScene = (scene: Scene, renderer, context) => {
-        planet.rotation.x += 0.01;
-        planet.rotation.y += 0.01;
-
-        console.log(scene.children);
+    const updateScene = (deltaT: number, scene: Scene, renderer, context) => {
+        planet.rotation.y = deltaT * 0.5;
     };
 
     return (
@@ -49,6 +42,11 @@ export default () => {
                 <Col xs={3} className="controls">
                     <Row>
                         <Col><h2>Controls</h2></Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Controls />
+                        </Col>
                     </Row>
                 </Col>
             </Row>
