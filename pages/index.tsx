@@ -40,14 +40,7 @@ export default () => {
                     <Renderer initScene={initScene} updateScene={updateScene} />
                 </Col>
                 <Col xs={3} className="controls">
-                    <Row>
-                        <Col><h2>Controls</h2></Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Controls />
-                        </Col>
-                    </Row>
+                    <Controls />
                 </Col>
             </Row>
         </Layout>)
