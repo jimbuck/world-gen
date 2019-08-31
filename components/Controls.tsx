@@ -11,7 +11,7 @@ const controls = {
     autoUpdateCheckbox: 'autoUpdateCheckbox',
     resolutionSlider: 'resolutionSlider',
     radiusSlider: 'radiusSlider',
-}
+};
 
 export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) => {
     console.log(`Rendering Controls...`);
@@ -19,6 +19,8 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [resolution, setResolution] = useState(8);
     const [radius, setRadius] = useState(1);
+
+    if(autoUpdate) emitChanges();
 
     return (
         <>
@@ -41,7 +43,7 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
                         </Form.Group>
                         <Form.Group controlId={controls.resolutionSlider}>
                             <Form.Label>Resolution: {resolution}</Form.Label>
-                            <Form.Control type="range" min={1} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
+                            <Form.Control type="range" min={2} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
                         </Form.Group>
                         {autoUpdate ? null : <Button block onClick={emitChanges}>Update</Button>}
                     </Form>
@@ -64,10 +66,6 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
             case controls.radiusSlider:
                 setRadius(parseFloat(e.target.value));
                 break;
-        }
-
-        if(autoUpdate) {
-            emitChanges();
         }
     }
 
