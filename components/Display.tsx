@@ -78,7 +78,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         return () => controlChanges.unbind(controlsChanged);
 
         function controlsChanged(settings: PlanetSettings) {
-            console.log(settings);
             Object.assign(planet, settings);
             planet.onShapeSettingsUpdated();
         }

@@ -9,6 +9,7 @@ import { EventShare } from '../hooks/use-event-share';
 const controls = {
     seedInput: 'seedInput',
     autoUpdateCheckbox: 'autoUpdateCheckbox',
+    wireframesCheckbox: 'wireframesCheckbox',
     resolutionSlider: 'resolutionSlider',
     radiusSlider: 'radiusSlider',
 };
@@ -17,6 +18,7 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
     console.log(`Rendering Controls...`);
     const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     const [autoUpdate, setAutoUpdate] = useState(true);
+    const [wireframes, setWireframes] = useState(true);
     const [resolution, setResolution] = useState(8);
     const [radius, setRadius] = useState(1);
 
@@ -36,6 +38,9 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
                         </Form.Group>
                         <Form.Group controlId={controls.autoUpdateCheckbox}>
                             <Form.Check type='checkbox' label='Auto Update' checked={autoUpdate} onChange={handleFormChange} />
+                        </Form.Group>
+                        <Form.Group controlId={controls.wireframesCheckbox}>
+                            <Form.Check type='checkbox' label='Wireframes' checked={wireframes} onChange={handleFormChange} />
                         </Form.Group>
                         <Form.Group controlId={controls.radiusSlider}>
                             <Form.Label>Radius: {radius}</Form.Label>
@@ -60,6 +65,9 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
             case controls.autoUpdateCheckbox:
                 setAutoUpdate(e.target.checked);
                 break;
+            case controls.wireframesCheckbox:
+                setWireframes(e.target.checked);
+                break;
             case controls.resolutionSlider:
                 setResolution(parseInt(e.target.value, 10));
                 break;
@@ -70,6 +78,6 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
     }
 
     function emitChanges() {
-        controlChanges.emit({ seed, resolution, radius });
+        controlChanges.emit({ seed, resolution, radius, wireframes });
     }
 }

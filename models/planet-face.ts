@@ -60,7 +60,7 @@ export class PlanetFace extends Object3D {
         var line = new LineSegments(wireframe);
         (line.material as LineBasicMaterial).color = new Color(0x000000);
         (line.material as LineBasicMaterial).linewidth = 2;
-        (line.material as LineBasicMaterial).depthTest = false;
+        //(line.material as LineBasicMaterial).depthTest = false;
         (line.material as LineBasicMaterial).opacity = 0.25;
         (line.material as LineBasicMaterial).transparent = true;
         this.add(line);
