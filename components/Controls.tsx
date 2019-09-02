@@ -5,9 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import PlanetSettings from '../models/planet-settings';
 import { EventShare } from '../hooks/event-share';
-import useLocalState from '../hooks/local-state';
 
-let freshPage = true;
 const controls = {
     seedInput: 'seedInput',
     autoUpdateCheckbox: 'autoUpdateCheckbox',
@@ -17,18 +15,15 @@ const controls = {
 };
 
 export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) => {
-    const [seed, setSeed] = useLocalState('seed', '' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
-    const [autoUpdate, setAutoUpdate] = useLocalState('autoUpdate', true);
-    const [wireframes, setWireframes] = useLocalState('wireframes', true);
-    const [resolution, setResolution] = useLocalState('resolution', 8);
-    const [radius, setRadius] = useLocalState('radius', 1);
+    const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+    const [autoUpdate, setAutoUpdate] = useState(true);
+    const [wireframes, setWireframes] = useState(true);
+    const [resolution, setResolution] = useState(8);
+    const [radius, setRadius] = useState(1);
 
     //console.log(`Rendering Controls...`, {seed, autoUpdate, wireframes, resolution, radius});
 
-    if(autoUpdate || freshPage) {
-        freshPage = false;
-        setTimeout(() => emitChanges(), 500);
-    }
+    if(autoUpdate) emitChanges();
 
     return (
         <>
