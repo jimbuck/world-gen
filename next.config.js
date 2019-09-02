@@ -2,5 +2,5 @@ const withCSS = require('@zeit/next-css');
 const withLess = require('@zeit/next-less');
 
 module.exports = withLess(withCSS({
-    /* config options here */
+    assetPrefix: process.env.NODE_ENV === 'production' ? '/world-gen' : '',
 }));
