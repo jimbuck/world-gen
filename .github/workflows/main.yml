@@ -11,9 +11,8 @@ jobs:
       uses: actions/checkout@master
       
     - name: Setup
-      run: |
-        mkdir out
-        touch out/.nojekyll
+      run: mkdir out
+        
 
     - name: Build and Deploy
       uses: JamesIves/github-pages-deploy-action@master
@@ -22,4 +21,4 @@ jobs:
         BASE_BRANCH: master
         BRANCH: gh-pages
         FOLDER: out
-        BUILD_SCRIPT: npm i && npm run build && npm run export
+        BUILD_SCRIPT: npm i && npm run build && npm run export && touch out/.nojekyll
