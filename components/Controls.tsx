@@ -27,9 +27,9 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
 
     return (
         <>
-            <Row>
+            {/* <Row>
                 <Col><h2>Controls</h2></Col>
-            </Row>
+            </Row> */}
             <Row>
                 <Col>
                     <Form>
