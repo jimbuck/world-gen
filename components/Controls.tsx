@@ -4,8 +4,10 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import PlanetSettings from '../models/planet-settings';
-import { EventShare } from '../hooks/use-event-share';
+import { EventShare } from '../hooks/event-share';
+import useLocalState from '../hooks/local-state';
 
+let freshPage = true;
 const controls = {
     seedInput: 'seedInput',
     autoUpdateCheckbox: 'autoUpdateCheckbox',
@@ -15,14 +17,18 @@ const controls = {
 };
 
 export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) => {
-    console.log(`Rendering Controls...`);
-    const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
-    const [autoUpdate, setAutoUpdate] = useState(true);
-    const [wireframes, setWireframes] = useState(true);
-    const [resolution, setResolution] = useState(8);
-    const [radius, setRadius] = useState(1);
+    const [seed, setSeed] = useLocalState('seed', '' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+    const [autoUpdate, setAutoUpdate] = useLocalState('autoUpdate', true);
+    const [wireframes, setWireframes] = useLocalState('wireframes', true);
+    const [resolution, setResolution] = useLocalState('resolution', 8);
+    const [radius, setRadius] = useLocalState('radius', 1);
 
-    if(autoUpdate) emitChanges();
+    //console.log(`Rendering Controls...`, {seed, autoUpdate, wireframes, resolution, radius});
+
+    if(autoUpdate || freshPage) {
+        freshPage = false;
+        setTimeout(() => emitChanges(), 500);
+    }
 
     return (
         <>
@@ -44,7 +50,7 @@ export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) 
                         </Form.Group>
                         <Form.Group controlId={controls.radiusSlider}>
                             <Form.Label>Radius: {radius}</Form.Label>
-                            <Form.Control type="range" min={1} max={16} step={0.25} value={radius+''} onChange={handleFormChange} />
+                            <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
                         </Form.Group>
                         <Form.Group controlId={controls.resolutionSlider}>
                             <Form.Label>Resolution: {resolution}</Form.Label>

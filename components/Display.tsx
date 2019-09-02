@@ -8,7 +8,7 @@ import {
 } from 'three';
 import { Planet } from '../models/planet';
 import PlanetSettings from '../models/planet-settings';
-import { EventShare } from '../hooks/use-event-share';
+import { EventShare } from '../hooks/event-share';
 
 
 export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {

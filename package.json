@@ -1,25 +1,24 @@
 {
-  "name": "planet.js",
+  "name": "world-gen",
   "version": "1.0.0",
   "description": "POC for building planets in TypeScript",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next",
-    "build": "next build",
-    "start": "next start"
+    "export": "next export"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jimbuck/planet.js.git"
+    "url": "git+https://github.com/jimbuck/world-gen.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jimbuck/planet.js/issues"
+    "url": "https://github.com/jimbuck/world-gen/issues"
   },
-  "homepage": "https://github.com/jimbuck/planet.js#readme",
+  "homepage": "https://github.com/jimbuck/world-gen#readme",
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-less": "^1.0.1",
