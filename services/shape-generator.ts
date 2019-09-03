@@ -1,18 +1,17 @@
 
 import { Vector3 } from 'three';
 import SimplexNoise from 'simplex-noise';
+import {PlanetSettings, NoiseSettings} from '../models/planet-settings';
 
 export class ShapeGenerator {
-    private settings: ShapeSettings;
     private noiseFilters: NoiseFilter[];
 
-    public ShapeGenerator(settings: ShapeSettings)
+    public constructor(private settings: PlanetSettings)
     {
-        this.settings = settings;
         this.noiseFilters = [];
-        for (let i = 0; i < settings.noiseLayers.length; i++)
+        for (let i = 0; i < this.settings.noiseLayers.length; i++)
         {
-            this.noiseFilters[i] = new NoiseFilter(settings.noiseLayers[i].noiseSettings);
+            this.noiseFilters[i] = new NoiseFilter(this.settings.noiseLayers[i].noiseSettings);
         }
     }
 
@@ -38,7 +37,7 @@ export class ShapeGenerator {
                 elevation += this.noiseFilters[i].Evaluate(pointOnUnitSphere) * mask;
             }
         }
-        return pointOnUnitSphere.clone().multiplyScalar(this.settings.planetRadius * (1+elevation));
+        return pointOnUnitSphere.clone().multiplyScalar(this.settings.radius * (1+elevation));
     }
 }
 
@@ -70,24 +69,3 @@ export class NoiseFilter {
     }
 }
 
-export interface ShapeSettings {
-    planetRadius: number;
-    noiseLayers: NoiseLayer[];
-}
-
-export interface NoiseLayer {
-    name: string;
-    enabled: boolean;
-    useFirstLayerAsMask: boolean;
-    noiseSettings: NoiseSettings;
-}
-
-export interface NoiseSettings {
-    baseRoughness: number;
-    roughness: number;
-    persistence: number;
-    octaves: number;
-    center: Vector3;
-    minValue: number;
-    strength: number;
-}

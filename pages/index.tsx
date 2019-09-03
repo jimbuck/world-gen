@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import Display from '../components/Display';
 import Controls from '../components/Controls';
 import { useEventShare } from '../hooks/event-share';
-import PlanetSettings from '../models/planet-settings';
+import {PlanetSettings} from '../models/planet-settings';
 
 
 export default () => {

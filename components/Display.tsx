@@ -7,7 +7,7 @@ import {
     PointLight
 } from 'three';
 import { Planet } from '../models/planet';
-import PlanetSettings from '../models/planet-settings';
+import {PlanetSettings} from '../models/planet-settings';
 import { EventShare } from '../hooks/event-share';
 
 

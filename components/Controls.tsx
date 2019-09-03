@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import PlanetSettings from '../models/planet-settings';
+import {PlanetSettings} from '../models/planet-settings';
 import { EventShare } from '../hooks/event-share';
 
 const controls = {
@@ -14,7 +14,7 @@ const controls = {
     radiusSlider: 'radiusSlider',
 };
 
-export default ({controlChanges}: {controlChanges: EventShare<PlanetSettings>}) => {
+export default ({controlChanges}: {controlChanges: EventShare<Partial<PlanetSettings>>}) => {
     const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [wireframes, setWireframes] = useState(true);
