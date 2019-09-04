@@ -3,6 +3,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tabs';
 import {PlanetSettings} from '../models/planet-settings';
 import { EventShare } from '../hooks/event-share';
 
@@ -33,23 +35,27 @@ export default ({controlChanges}: {controlChanges: EventShare<Partial<PlanetSett
             <Row>
                 <Col>
                     <Form>
-                        <Form.Group controlId={controls.seedInput}>
-                            <Form.Label>Seed:</Form.Label>
-                            <Form.Control type="input" value={seed+''} onChange={handleFormChange} />
-                        </Form.Group>
+                        <Tabs id='control-tabs' defaultActiveKey='planet-info-tab'>
+                            <Tab id='planet-info-tab' eventKey='planet-info-tab' title='Details'>
+                                <Form.Group controlId={controls.seedInput}>
+                                    <Form.Label>Seed:</Form.Label>
+                                    <Form.Control type="input" value={seed+''} onChange={handleFormChange} />
+                                </Form.Group>
+                                <Form.Group controlId={controls.wireframesCheckbox}>
+                                    <Form.Check type='checkbox' label='Wireframes' checked={wireframes} onChange={handleFormChange} />
+                                </Form.Group>
+                                <Form.Group controlId={controls.radiusSlider}>
+                                    <Form.Label>Radius: {radius}</Form.Label>
+                                    <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
+                                </Form.Group>
+                                <Form.Group controlId={controls.resolutionSlider}>
+                                    <Form.Label>Resolution: {resolution}</Form.Label>
+                                    <Form.Control type="range" min={2} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
+                                </Form.Group>
+                            </Tab>
+                        </Tabs>
                         <Form.Group controlId={controls.autoUpdateCheckbox}>
                             <Form.Check type='checkbox' label='Auto Update' checked={autoUpdate} onChange={handleFormChange} />
-                        </Form.Group>
-                        <Form.Group controlId={controls.wireframesCheckbox}>
-                            <Form.Check type='checkbox' label='Wireframes' checked={wireframes} onChange={handleFormChange} />
-                        </Form.Group>
-                        <Form.Group controlId={controls.radiusSlider}>
-                            <Form.Label>Radius: {radius}</Form.Label>
-                            <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
-                        </Form.Group>
-                        <Form.Group controlId={controls.resolutionSlider}>
-                            <Form.Label>Resolution: {resolution}</Form.Label>
-                            <Form.Control type="range" min={2} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
                         </Form.Group>
                         {autoUpdate ? null : <Button block onClick={emitChanges}>Update</Button>}
                     </Form>
