@@ -30,7 +30,7 @@ export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomi
         <>
             <Form.Group controlId={controls.nameInput}>
                 <Form.Label>Name:</Form.Label>
-                <Form.Control type="input" value={name+''} onChange={handleFormChange} data-lpignore="true"/>
+                <Form.Control type="input" value={name+''} onChange={handleFormChange}/>
             </Form.Group>
             <Form.Group controlId={controls.seedInput}>
                 <Form.Label>Seed:</Form.Label>

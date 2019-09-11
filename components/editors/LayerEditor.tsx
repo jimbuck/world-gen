@@ -10,23 +10,23 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Octicon, { Trashcan } from '@primer/octicons-react';
 import { Vector3 } from 'three';
 
-import { NoiseLayer, MaskTypes } from '../../models/planet-settings';
+import { PlanetLayer, MaskTypes } from '../../models/planet-settings';
 import { StateArray } from '../../hooks/use-state-array';
-import guid from '../../services/guid';
+import { guid } from '../../services/helpers';
 
-export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
+export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) => {
     return (
         <ListGroup as="ul" variant='flush'>
             {layers.current.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
                     <Form.Group>
                         <div className='d-flex mb-2'>
-                            <Form.Label >Name:</Form.Label>
+                            <Form.Label >Label:</Form.Label>
                             <Button className='ml-auto btn-sm' variant='outline-danger' onClick={removeLayer(i)}>
                                 <Octicon icon={Trashcan} />
                             </Button>
                         </div>
-                        <Form.Control type="input" name='name' value={layer.name} onChange={handleLayerChange(layer, i)} />
+                        <Form.Control type="input" name='label' value={layer.label} onChange={handleLayerChange(layer, i)} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
@@ -64,7 +64,7 @@ export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
         return function () {
             layers.push({
                 id: guid(),
-                name: `${type} Layer ${layers.current.length}`,
+                label: `${type} ${layers.current.length}`,
                 enabled: true,
                 maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
                 noiseSettings: {
@@ -86,15 +86,15 @@ export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
         }
     }
 
-    function handleLayerChange(layer: NoiseLayer, index: number) {
+    function handleLayerChange(layer: PlanetLayer, index: number) {
 
         layer = { ...layer };
 
         return function (e: any) {
-            console.log(`${e.target.name} -> ${e.target.value}`);
+            //console.log(`${e.target.name} -> ${e.target.value}`);
             switch (e.target.name) {
-                case 'name':
-                    layer.name = e.target.value;
+                case 'label':
+                    layer.label = e.target.value;
                     break;
                 case 'enabled':
                     layer.enabled = e.target.checked;

@@ -7,12 +7,12 @@ export interface PlanetSettings {
     radius: number;
     wireframes: boolean;
     color: string;
-    planetLayers: NoiseLayer[];
+    planetLayers: PlanetLayer[];
 }
 
-export interface NoiseLayer {
+export interface PlanetLayer {
     id?: string;
-    name: string;
+    label: string;
     enabled: boolean;
     maskType: MaskTypes;
     noiseSettings?: NoiseSettings;

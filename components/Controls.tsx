@@ -14,10 +14,10 @@ import Octicon, { Check } from '@primer/octicons-react';
 import LayerEditor from './editors/LayerEditor';
 import InfoEditor from './editors/InfoEditor';
 
-import {PlanetSettings, NoiseLayer, MaskTypes} from '../models/planet-settings';
+import {PlanetSettings, PlanetLayer, MaskTypes} from '../models/planet-settings';
 import { EventShare } from '../hooks/use-event-share';
 import { useStateArray } from '../hooks/use-state-array';
-import guid from '../services/guid';
+import {guid, randomSeed} from '../services/helpers';
 
 const controls = {
     nameInput: 'nameInput',
@@ -37,16 +37,16 @@ const tabStyles = {
 
 export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetSettings>> }) => {
     const [name, setName] = useState('New Planet');
-    const [seed, setSeed] = useState(getRandomSeed());
+    const [seed, setSeed] = useState(randomSeed());
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [wireframes, setWireframes] = useState(true);
     const [resolution, setResolution] = useState(30);
     const [radius, setRadius] = useState(1);
     const [color, setColor] = useState('#2D6086');
     
-    const layers = useStateArray<NoiseLayer>([{
+    const layers = useStateArray<PlanetLayer>([{
         id: guid(),
-        name: "Layer 0",
+        label: `Layer 0`,
         enabled: true,
         maskType: MaskTypes.None,
         noiseSettings: {
@@ -72,13 +72,13 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
             </Row>
             <Row>
                 <Col>
-                    <Form autoComplete='off'>
+                    <Form autoComplete='off' data-lpignore="true">
                         <Tabs id='control-tabs' defaultActiveKey='planet-info-tab' className='nav-fill' transition={false}>
                             <Tab id='planet-info-tab' eventKey='planet-info-tab' title='Info' className={tabClasses} style={tabStyles} >
                                 <InfoEditor {...{ name, seed, radius, color, handleFormChange, handleSeedRandomization, handleColorChange }}  />                             
                             </Tab>
                             <Tab id='layers-tab' eventKey='layers-tab' title='Layers' className={tabClasses} style={{...tabStyles, paddingTop: 0, paddingLeft: 0, paddingRight: 0}}>
-                                <LayerEditor layers={layers} />
+                                <LayerEditor seed={seed} layers={layers} />
                             </Tab>
                             <Tab id='graphics-tab' eventKey='graphics-tab' title='Graphics' className={tabClasses} style={tabStyles}>
                                 <Form.Group controlId={controls.autoUpdateCheckbox}>
@@ -94,7 +94,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
                             </Tab>
                         </Tabs>
                         {autoUpdate ? null : <Button block onClick={emitChanges} style={{borderTopLeftRadius: 0, borderTopRightRadius: 0}}>Update <Octicon icon={Check} /></Button>} 
-                    </Form>           
+                    </Form>
                 </Col>
             </Row>
         </>
@@ -128,11 +128,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
     }
 
     function handleSeedRandomization() {
-        setSeed(getRandomSeed());
-    }
-
-    function getRandomSeed() {
-        return Array(3).fill(0).map(() => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36).toUpperCase()).join('');
+        setSeed(randomSeed());
     }
 
     function emitChanges() {
