@@ -3,17 +3,15 @@ import { Vector3 } from 'three';
 import SimplexNoise from 'simplex-noise';
 import { PlanetSettings, NoiseSettings, MaskTypes } from '../models/planet-settings';
 
-const MAX_RENDER_RADIUS = 1.4;
+const MAX_RENDER_RADIUS = 3;
 
 export class ShapeGenerator {
     private noiseFilters: NoiseFilter[];
-    private noise: SimplexNoise;
 
     public constructor(private settings: PlanetSettings) {
-        this.noise = new SimplexNoise(this.settings.seed);
         this.noiseFilters = [];
         for (let i = 0; i < this.settings.planetLayers.length; i++) {
-            this.noiseFilters[i] = new NoiseFilter(this.noise, this.settings.planetLayers[i].noiseSettings);
+            this.noiseFilters[i] = new NoiseFilter(new SimplexNoise(`${this.settings.seed}_layer${i}`), this.settings.planetLayers[i].noiseSettings);
         }
     }
 

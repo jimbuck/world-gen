@@ -9,8 +9,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
 
-import throttle from 'lodash.throttle';
-
 const controls = {
     nameInput: 'nameInput',
     seedInput: 'seedInput',
@@ -32,7 +30,7 @@ export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomi
         <>
             <Form.Group controlId={controls.nameInput}>
                 <Form.Label>Name:</Form.Label>
-                <Form.Control type="input" value={name+''} onChange={handleFormChange} />
+                <Form.Control type="input" value={name+''} onChange={handleFormChange} data-lpignore="true"/>
             </Form.Group>
             <Form.Group controlId={controls.seedInput}>
                 <Form.Label>Seed:</Form.Label>
@@ -51,7 +49,7 @@ export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomi
             </Form.Group>
             <Form.Group>
                 <Form.Label>Color: {color}</Form.Label>
-                <SliderPicker color={color} onChangeComplete={(e) => handleColorChange(e.hex)} />
+                <SliderPicker color={color} onChangeComplete={(e) => handleColorChange(e.hex.toUpperCase())} />
             </Form.Group>
         </>
     );

@@ -28,7 +28,8 @@ export default () => {
             </Row>
             <Row>
                 <Col>
-                    <p>Inspired by and derived from <a href="https://github.com/SebLague/Procedural-Planets" target="_blank" >Sebastian Lague</a>'s YouTube series on <a href="https://www.youtube.com/playlist?list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8" target="_blank">Procedural Planet Generation (in Unity)</a>.</p>
+                    <p>Inspired by and derived from <a href="https://github.com/SebLague" target="_blank" >Sebastian Lague</a>'s 
+                    work on Procedural Planet Generation in Unity (<a href="https://github.com/SebLague/Procedural-Planets" target="_blank">Code</a> | <a href="https://www.youtube.com/playlist?list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8" target="_blank">Video</a>).</p>
                 </Col>
             </Row>
         </Layout>);

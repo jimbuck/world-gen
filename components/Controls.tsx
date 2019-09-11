@@ -40,9 +40,9 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
     const [seed, setSeed] = useState(getRandomSeed());
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [wireframes, setWireframes] = useState(true);
-    const [resolution, setResolution] = useState(8);
+    const [resolution, setResolution] = useState(30);
     const [radius, setRadius] = useState(1);
-    const [color, setColor] = useState('#40bf55');
+    const [color, setColor] = useState('#2D6086');
     
     const layers = useStateArray<NoiseLayer>([{
         id: guid(),
@@ -50,18 +50,20 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
         enabled: true,
         maskType: MaskTypes.None,
         noiseSettings: {
-            baseRoughness: 0,
-            roughness: 1,
-            persistence: 1,
-            octaves: 4,
+            baseRoughness: 1,
+            roughness: 1.5,
+            persistence: 0.1,
+            octaves: 3,
             center: new Vector3(0,0,0),
-            minValue: 0.5,
-            strength: 1,
+            minValue: 0.6,
+            strength: 0.5
         }
     }]);
 
     // Trigger a change if auto-update is enabled.
-    useEffect(() => autoUpdate && emitChanges());
+    useEffect(() => {
+        if (autoUpdate) emitChanges();
+    });
 
     return (
         <>

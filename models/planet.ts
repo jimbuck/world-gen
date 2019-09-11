@@ -45,11 +45,11 @@ export class Planet extends Group {
         this.generateColors();
     }
 
-    private init() {        
+    private init() {
         this.shapeGenerator = new ShapeGenerator(this.settings);
         const material = new MeshPhongMaterial({
             color: this.settings.color,
-            specular: '#ffffff'
+            specular: '#111111'
         });
         this.remove(...this.children);
         for (let i = 0; i < 6; i++) {

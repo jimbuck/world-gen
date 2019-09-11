@@ -26,8 +26,8 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     };
 
     useEffect(() => {
-        canvasRef.current.width = window.outerWidth / 1.5;
-        canvasRef.current.height = canvasRef.current.width * (9 / 16);
+        canvasRef.current.height = 720;
+        canvasRef.current.width = canvasRef.current.height * (16 / 9);
 
         const renderer = new WebGLRenderer({
             canvas: canvasRef.current,
@@ -44,10 +44,10 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         camera.position.set(5, 3, 5);
         camera.lookAt(0, 0, 0);
 
-        const ambientLight = new AmbientLight('#ffffff', 0.5)
+        const ambientLight = new AmbientLight('#ffffff', 1)
         scene.add(ambientLight);
 
-        const pointLight = new PointLight('#ffffff', 1.0)
+        const pointLight = new PointLight('#efe8a9', 0.5)
         pointLight.position.set(5, 10, 5)
         scene.add(pointLight);
 

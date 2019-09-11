@@ -15,8 +15,6 @@ import { StateArray } from '../../hooks/use-state-array';
 import guid from '../../services/guid';
 
 export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
-    
-
     return (
         <ListGroup as="ul" variant='flush'>
             {layers.current.map((layer, i) => (
@@ -70,13 +68,13 @@ export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
                 enabled: true,
                 maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
                 noiseSettings: {
-                    baseRoughness: 0,
-                    roughness: 1,
-                    persistence: 1,
-                    octaves: 4,
+                    baseRoughness: 1,
+                    roughness: 1.5,
+                    persistence: 0.1,
+                    octaves: 3,
                     center: new Vector3(0,0,0),
-                    minValue: 0.5,
-                    strength: 1,
+                    minValue: 0.6,
+                    strength: 0.5
                 }
             });
         }
