@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,10 +7,16 @@ import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tabs';
 
+import { Vector3 } from 'three';
+
+import Octicon, { Check } from '@primer/octicons-react';
+
 import LayerEditor from './editors/LayerEditor';
+import InfoEditor from './editors/InfoEditor';
 
 import {PlanetSettings, NoiseLayer, MaskTypes} from '../models/planet-settings';
-import { EventShare } from '../hooks/event-share';
+import { EventShare } from '../hooks/use-event-share';
+import { useStateArray } from '../hooks/use-state-array';
 import guid from '../services/guid';
 
 const controls = {
@@ -30,20 +36,32 @@ const tabStyles = {
 };
 
 export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetSettings>> }) => {
-    const [name, setName] = useState('My New Planet');
-    const [seed, setSeed] = useState('' + Math.floor(Math.random() * Number.MAX_SAFE_INTEGER));
+    const [name, setName] = useState('New Planet');
+    const [seed, setSeed] = useState(getRandomSeed());
     const [autoUpdate, setAutoUpdate] = useState(true);
     const [wireframes, setWireframes] = useState(true);
     const [resolution, setResolution] = useState(8);
     const [radius, setRadius] = useState(1);
-    const [layers, setLayers] = useState<NoiseLayer[]>([{
+    const [color, setColor] = useState('#40bf55');
+    
+    const layers = useStateArray<NoiseLayer>([{
         id: guid(),
         name: "Layer 0",
         enabled: true,
-        maskType: MaskTypes.None
+        maskType: MaskTypes.None,
+        noiseSettings: {
+            baseRoughness: 0,
+            roughness: 1,
+            persistence: 1,
+            octaves: 4,
+            center: new Vector3(0,0,0),
+            minValue: 0.5,
+            strength: 1,
+        }
     }]);
 
-    if(autoUpdate) emitChanges();
+    // Trigger a change if auto-update is enabled.
+    useEffect(() => autoUpdate && emitChanges());
 
     return (
         <>
@@ -53,23 +71,12 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
             <Row>
                 <Col>
                     <Form autoComplete='off'>
-                        <Tabs id='control-tabs' defaultActiveKey='planet-info-tab' className='nav-fill'>
-                            <Tab id='planet-info-tab' eventKey='planet-info-tab' title='Details' className={tabClasses} style={tabStyles} >
-                                <Form.Group controlId={controls.nameInput}>
-                                    <Form.Label>Name:</Form.Label>
-                                    <Form.Control type="input" value={name+''} onChange={handleFormChange} />
-                                </Form.Group>
-                                <Form.Group controlId={controls.seedInput}>
-                                    <Form.Label>Seed:</Form.Label>
-                                    <Form.Control type="input" value={seed+''} onChange={handleFormChange} />
-                                </Form.Group>
-                                <Form.Group controlId={controls.radiusSlider}>
-                                    <Form.Label>Radius: {radius}</Form.Label>
-                                    <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
-                                </Form.Group>                                
+                        <Tabs id='control-tabs' defaultActiveKey='planet-info-tab' className='nav-fill' transition={false}>
+                            <Tab id='planet-info-tab' eventKey='planet-info-tab' title='Info' className={tabClasses} style={tabStyles} >
+                                <InfoEditor {...{ name, seed, radius, color, handleFormChange, handleSeedRandomization, handleColorChange }}  />                             
                             </Tab>
                             <Tab id='layers-tab' eventKey='layers-tab' title='Layers' className={tabClasses} style={{...tabStyles, paddingTop: 0, paddingLeft: 0, paddingRight: 0}}>
-                                <LayerEditor layers={layers} onLayerChange={handleLayersChange} />
+                                <LayerEditor layers={layers} />
                             </Tab>
                             <Tab id='graphics-tab' eventKey='graphics-tab' title='Graphics' className={tabClasses} style={tabStyles}>
                                 <Form.Group controlId={controls.autoUpdateCheckbox}>
@@ -84,7 +91,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
                                 </Form.Group>
                             </Tab>
                         </Tabs>
-                        {autoUpdate ? null : <Button block onClick={emitChanges} style={{borderTopLeftRadius: 0, borderTopRightRadius: 0}}>Update</Button>} 
+                        {autoUpdate ? null : <Button block onClick={emitChanges} style={{borderTopLeftRadius: 0, borderTopRightRadius: 0}}>Update <Octicon icon={Check} /></Button>} 
                     </Form>           
                 </Col>
             </Row>
@@ -114,11 +121,19 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
         }
     }
 
-    function handleLayersChange(updatedLayers: NoiseLayer[]) {
-        setLayers(updatedLayers);
+    function handleColorChange(newColor: string) {
+        setColor(newColor);
+    }
+
+    function handleSeedRandomization() {
+        setSeed(getRandomSeed());
+    }
+
+    function getRandomSeed() {
+        return Array(3).fill(0).map(() => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString(36).toUpperCase()).join('');
     }
 
     function emitChanges() {
-        controlChanges.emit({ name, seed, resolution, radius, wireframes, planetLayers: layers });
+        controlChanges.emit({ name, seed, resolution, radius, color, wireframes, planetLayers: layers.current });
     }
 }

@@ -8,8 +8,7 @@ import {
 } from 'three';
 import { Planet } from '../models/planet';
 import {PlanetSettings} from '../models/planet-settings';
-import { EventShare } from '../hooks/event-share';
-
+import { EventShare } from '../hooks/use-event-share';
 
 export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {
     console.log(`Rendering Display...`);
@@ -17,9 +16,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer, context) => {
         planet = new Planet();
-        planet.radius = 1;
-        planet.resolution = 8;
-        planet.wireframes = true;
 
         planet.initialize();
         scene.add(planet);
@@ -28,7 +24,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     const updateScene = (deltaT: number, scene: Scene, renderer, context) => {
         planet.rotation.y = deltaT * 0.5;
     };
-
 
     useEffect(() => {
         canvasRef.current.width = window.outerWidth / 1.5;
@@ -46,7 +41,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         scene.add(new AxesHelper(5));
 
         const camera = new PerspectiveCamera(60, canvasRef.current.width / canvasRef.current.height, 0.1, 1000);
-        camera.position.set(3, 2, 3);
+        camera.position.set(5, 3, 5);
         camera.lookAt(0, 0, 0);
 
         const ambientLight = new AmbientLight('#ffffff', 0.5)
@@ -78,8 +73,8 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         return () => controlChanges.unbind(controlsChanged);
 
         function controlsChanged(settings: PlanetSettings) {
-            Object.assign(planet, settings);
-            planet.onShapeSettingsUpdated();
+            //console.log('Planet updated!', { ...settings });
+            planet.updateSettings(settings);
         }
     });
 

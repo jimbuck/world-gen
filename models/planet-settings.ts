@@ -6,6 +6,7 @@ export interface PlanetSettings {
     resolution: number;
     radius: number;
     wireframes: boolean;
+    color: string;
     planetLayers: NoiseLayer[];
 }
 

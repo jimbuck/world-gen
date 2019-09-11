@@ -8,16 +8,18 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Octicon, { Trashcan } from '@primer/octicons-react';
+import { Vector3 } from 'three';
 
 import { NoiseLayer, MaskTypes } from '../../models/planet-settings';
+import { StateArray } from '../../hooks/use-state-array';
 import guid from '../../services/guid';
 
-export default ({ layers, onLayerChange }: {layers: NoiseLayer[], onLayerChange: (e: NoiseLayer[]) => void}) => {
+export default ({ layers }: { layers: StateArray<NoiseLayer> }) => {
     
 
     return (
         <ListGroup as="ul" variant='flush'>
-            {layers.map((layer, i) => (
+            {layers.current.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
                     <Form.Group>
                         <div className='d-flex mb-2'>
@@ -43,10 +45,18 @@ export default ({ layers, onLayerChange }: {layers: NoiseLayer[], onLayerChange:
             ))}
             <ListGroup.Item as="li">
                 <DropdownButton id='addLayerButton' variant='outline-success' className='text-center' title='Add Layer'>
+                    <Dropdown.Header>Terrain Presets</Dropdown.Header>
                     <Dropdown.Item onClick={addLayer('Continents')}>Continents</Dropdown.Item>
                     <Dropdown.Item onClick={addLayer('Mountains')}>Mountains</Dropdown.Item>
                     <Dropdown.Item onClick={addLayer('Plataues')}>Plataues</Dropdown.Item>
                     <Dropdown.Item onClick={addLayer('Hills')}>Hills</Dropdown.Item>
+                    <Dropdown.Header>Atmosphere Presets</Dropdown.Header>
+                    <Dropdown.Item onClick={addLayer('Light Clouds')}>Light Clouds</Dropdown.Item>
+                    <Dropdown.Item onClick={addLayer('Dense Clouds')}>Dense Clouds</Dropdown.Item>
+                    <Dropdown.Item onClick={addLayer('Hurricans')}>Hurricans</Dropdown.Item>
+                    <Dropdown.Header>Orbital Presets</Dropdown.Header>
+                    <Dropdown.Item onClick={addLayer('Small Rings')}>Small Rings</Dropdown.Item>
+                    <Dropdown.Item onClick={addLayer('Large Rings')}>Large Rings</Dropdown.Item>
                 </DropdownButton>
             </ListGroup.Item>
         </ListGroup>
@@ -54,18 +64,27 @@ export default ({ layers, onLayerChange }: {layers: NoiseLayer[], onLayerChange:
 
     function addLayer(type) {
         return function () {
-            onLayerChange([...layers, {
+            layers.push({
                 id: guid(),
-                name: `${type} Layer ${layers.length}`,
+                name: `${type} Layer ${layers.current.length}`,
                 enabled: true,
-                maskType: layers.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer
-            }]);
+                maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
+                noiseSettings: {
+                    baseRoughness: 0,
+                    roughness: 1,
+                    persistence: 1,
+                    octaves: 4,
+                    center: new Vector3(0,0,0),
+                    minValue: 0.5,
+                    strength: 1,
+                }
+            });
         }
     }
 
     function removeLayer(index: number) {
         return function () {
-            onLayerChange([...layers.slice(0, index), ...layers.slice(index + 1)]);
+            layers.removeAt(index);
         }
     }
 
@@ -86,7 +105,7 @@ export default ({ layers, onLayerChange }: {layers: NoiseLayer[], onLayerChange:
                     layer.maskType = e.target.value;
             }
 
-            onLayerChange([...layers.slice(0, index), layer, ...layers.slice(index + 1)]);
+            layers.update(index, layer);
         };
     }
 }

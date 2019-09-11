@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import Layout from '../components/Layout';
 import Display from '../components/Display';
 import Controls from '../components/Controls';
-import { useEventShare } from '../hooks/event-share';
+import { useEventShare } from '../hooks/use-event-share';
 import {PlanetSettings} from '../models/planet-settings';
 
 
@@ -19,10 +19,10 @@ export default () => {
                 </Col>
             </Row>
             <Row style={{height: ""}}>
-                <Col lg={'auto'} xs={12} className="display">
+                <Col md={'auto'} xs={12} className="display">
                     <Display controlChanges={controlChanges} />
                 </Col>
-                <Col lg={3} xs={12} className="controls">
+                <Col md={3} xs={12} className="controls">
                     <Controls controlChanges={controlChanges} />
                 </Col>
             </Row>
