@@ -26,5 +26,10 @@ export default () => {
                     <Controls controlChanges={controlChanges} />
                 </Col>
             </Row>
+            <Row>
+                <Col>
+                    <p>Inspired by and derived from <a href="https://github.com/SebLague/Procedural-Planets" target="_blank" >Sebastian Lague</a>'s YouTube series on <a href="https://www.youtube.com/playlist?list=PLFt_AvWsXl0cONs3T0By4puYy6GM22ko8" target="_blank">Procedural Planet Generation (in Unity)</a>.</p>
+                </Col>
+            </Row>
         </Layout>);
 }
