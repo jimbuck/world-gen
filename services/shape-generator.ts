@@ -26,6 +26,7 @@ export class ShapeGenerator {
             firstLayerValue = prevLayerValue = this.noiseFilters[0].Evaluate(pointOnUnitSphere);
             if (this.settings.planetLayers[0].enabled) {
                 elevation = firstLayerValue;
+                //console.log(prevLayerValue);
             }
         }
 
@@ -35,6 +36,7 @@ export class ShapeGenerator {
                     (this.settings.planetLayers[i].maskType === MaskTypes.PrevLayer) ? prevLayerValue : 1;
                 prevLayerValue = this.noiseFilters[i].Evaluate(pointOnUnitSphere);
                 elevation += prevLayerValue * mask;
+                //console.log(prevLayerValue);
             }
         }
         return pointOnUnitSphere.clone().multiplyScalar(Math.min(this.settings.radius, MAX_RENDER_RADIUS) * (1 + elevation));
@@ -54,7 +56,7 @@ export class NoiseFilter {
         for (let i = 0; i < this.settings.octaves; i++) {
             let p = point.clone().multiplyScalar(frequency).add(this.settings.center);
             p = p.applyQuaternion(q);
-            let v = this.noise.noise3D(p.x*this.settings.strech.x, p.y*this.settings.strech.y, p.z*this.settings.strech.x);
+            let v = this.noise.noise3D(p.x/this.settings.strech.x, p.y/this.settings.strech.y, p.z/this.settings.strech.x);
             noiseValue += (v + 1) * 0.5 * amplitude;
             frequency *= this.settings.roughness;
             amplitude *= this.settings.persistence;

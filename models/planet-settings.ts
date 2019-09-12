@@ -32,13 +32,13 @@ export interface NoiseSettings {
 
 export function createContinentNoise() {
     return {
-        baseRoughness: 0.5,
-        roughness: 3.2,
-        persistence: 0.3,
+        baseRoughness: 1.1,
+        roughness: 2,
+        persistence: 0.5,
         octaves: 4,
         center: new Vector3(0,0,0),
-        minValue: 0.7,
-        strength: 0.1,
+        minValue: 0.8,
+        strength: 0.15,
         strech: new Vector2(1, 1),
         skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
@@ -46,14 +46,14 @@ export function createContinentNoise() {
 
 export function createMoutainNoise() {
     return {
-        baseRoughness: 5,
-        roughness: 5,
-        persistence: 0.4,
+        baseRoughness: 1.1,
+        roughness: 2,
+        persistence: 0.8,
         octaves: 4,
         center: new Vector3(0,0,0),
-        minValue: 0.6,
-        strength: 0.15,
-        strech: new Vector2(1, 1),
+        minValue: 1.7,
+        strength: 0.3,
+        strech: new Vector2(0.8, 0.8),
         skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
 };

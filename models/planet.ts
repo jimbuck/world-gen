@@ -52,6 +52,7 @@ export class Planet extends Group {
             specular: '#222222'
         });
         this.remove(...this.children);
+
         for (let i = 0; i < 6; i++) {
             const surface = new Mesh(new Geometry(), material);
 
