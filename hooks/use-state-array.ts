@@ -36,7 +36,7 @@ export function useStateArrayPersisted<T>(key: string, initialValue: T[] = []): 
  * Creates a state and setter function for the array.
  * @param initialValue The initial value to use.
  */
-export function useStauteArray<T>(initialValue: T[] = []): StateArray<T> {
+export function useStateArray<T>(initialValue: T[] = []): StateArray<T> {
     const [current, setArr] = useState(initialValue);
 
     return _useStateArrayLogic(current, setArr);

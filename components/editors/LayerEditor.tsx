@@ -8,9 +8,8 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Octicon, { Trashcan } from '@primer/octicons-react';
-import { Vector3 } from 'three';
 
-import { PlanetLayer, MaskTypes } from '../../models/planet-settings';
+import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise } from '../../models/planet-settings';
 import { StateArray } from '../../hooks/use-state-array';
 import { guid } from '../../services/helpers';
 
@@ -60,22 +59,14 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
         </ListGroup>
     );
 
-    function addLayer(type) {
+    function addLayer(type: string) {
         return function () {
             layers.push({
                 id: guid(),
                 label: `${type} ${layers.current.length}`,
                 enabled: true,
                 maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
-                noiseSettings: {
-                    baseRoughness: 1,
-                    roughness: 1.5,
-                    persistence: 0.1,
-                    octaves: 3,
-                    center: new Vector3(0,0,0),
-                    minValue: 0.6,
-                    strength: 0.5
-                }
+                noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
             });
         }
     }

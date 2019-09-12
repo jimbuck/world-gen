@@ -14,9 +14,9 @@ import Octicon, { Check } from '@primer/octicons-react';
 import LayerEditor from './editors/LayerEditor';
 import InfoEditor from './editors/InfoEditor';
 
-import {PlanetSettings, PlanetLayer, MaskTypes} from '../models/planet-settings';
+import {PlanetSettings, PlanetLayer, MaskTypes, createContinentNoise} from '../models/planet-settings';
 import { EventShare } from '../hooks/use-event-share';
-import { useStateArrayPersisted } from '../hooks/use-state-array';
+import { useStateArray, useStateArrayPersisted } from '../hooks/use-state-array';
 import useStatePersisted from '../hooks/use-state-persisted';
 import {guid, randomSeed} from '../services/helpers';
 
@@ -46,20 +46,13 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
     const [radius, setRadius] = useStatePersisted('world-gen:radius', 1);
     const [color, setColor] = useState('#2D6086');
     
-    const layers = useStateArrayPersisted<PlanetLayer>('world-gen:layers', [{
+    const layers = useStateArray<PlanetLayer>([{
+    //const layers = useStateArrayPersisted<PlanetLayer>('world-gen:layers', [{
         id: guid(),
         label: `Layer 0`,
         enabled: true,
         maskType: MaskTypes.None,
-        noiseSettings: {
-            baseRoughness: 1,
-            roughness: 1.5,
-            persistence: 0.1,
-            octaves: 3,
-            center: new Vector3(0,0,0),
-            minValue: 0.6,
-            strength: 0.5
-        }
+        noiseSettings: createContinentNoise()
     }]);
 
     // Trigger a change if auto-update is enabled.
