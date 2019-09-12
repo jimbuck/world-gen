@@ -16,7 +16,8 @@ import InfoEditor from './editors/InfoEditor';
 
 import {PlanetSettings, PlanetLayer, MaskTypes} from '../models/planet-settings';
 import { EventShare } from '../hooks/use-event-share';
-import { useStateArray } from '../hooks/use-state-array';
+import { useStateArrayPersisted } from '../hooks/use-state-array';
+import useStatePersisted from '../hooks/use-state-persisted';
 import {guid, randomSeed} from '../services/helpers';
 
 const controls = {
@@ -36,15 +37,16 @@ const tabStyles = {
 };
 
 export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetSettings>> }) => {
+    const [activeTab, setActiveTab] = useStatePersisted('world-gen:active-tab', 'planet-info-tab'); 
     const [name, setName] = useState('New Planet');
     const [seed, setSeed] = useState(randomSeed());
-    const [autoUpdate, setAutoUpdate] = useState(true);
-    const [wireframes, setWireframes] = useState(true);
-    const [resolution, setResolution] = useState(30);
-    const [radius, setRadius] = useState(1);
+    const [autoUpdate, setAutoUpdate] = useStatePersisted('world-gen:auto-update', true);
+    const [wireframes, setWireframes] = useStatePersisted('world-gen:wireframes', true);
+    const [resolution, setResolution] = useStatePersisted('world-gen:resolution', 30);
+    const [radius, setRadius] = useStatePersisted('world-gen:radius', 1);
     const [color, setColor] = useState('#2D6086');
     
-    const layers = useStateArray<PlanetLayer>([{
+    const layers = useStateArrayPersisted<PlanetLayer>('world-gen:layers', [{
         id: guid(),
         label: `Layer 0`,
         enabled: true,
@@ -73,7 +75,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
             <Row>
                 <Col>
                     <Form autoComplete='off' data-lpignore="true">
-                        <Tabs id='control-tabs' defaultActiveKey='planet-info-tab' className='nav-fill' transition={false}>
+                        <Tabs id='control-tabs' activeKey={activeTab} onSelect={k => setActiveTab(k)} className='nav-fill' transition={false}>
                             <Tab id='planet-info-tab' eventKey='planet-info-tab' title='Info' className={tabClasses} style={tabStyles} >
                                 <InfoEditor {...{ name, seed, radius, color, handleFormChange, handleSeedRandomization, handleColorChange }}  />                             
                             </Tab>

@@ -49,7 +49,7 @@ export class Planet extends Group {
         this.shapeGenerator = new ShapeGenerator(this.settings);
         const material = new MeshPhongMaterial({
             color: this.settings.color,
-            specular: '#111111'
+            specular: '#222222'
         });
         this.remove(...this.children);
         for (let i = 0; i < 6; i++) {
