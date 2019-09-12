@@ -1,9 +1,11 @@
 
-import { Vector3 } from 'three';
+import { Vector3, Quaternion } from 'three';
 import SimplexNoise from 'simplex-noise';
 import { PlanetSettings, NoiseSettings, MaskTypes } from '../models/planet-settings';
 
 const MAX_RENDER_RADIUS = 3;
+
+const VECTOR3_IDENTITY = new Vector3(1, 1, 1);
 
 export class ShapeGenerator {
     private noiseFilters: NoiseFilter[];
@@ -48,9 +50,11 @@ export class NoiseFilter {
         let frequency = this.settings.baseRoughness;
         let amplitude = 1;
 
+        let q = new Quaternion().setFromAxisAngle(this.settings.skew, Math.PI / 2);
         for (let i = 0; i < this.settings.octaves; i++) {
             let p = point.clone().multiplyScalar(frequency).add(this.settings.center);
-            let v = this.noise.noise3D(p.x, p.y, p.z);
+            p = p.applyQuaternion(q);
+            let v = this.noise.noise3D(p.x*this.settings.strech.x, p.y*this.settings.strech.y, p.z*this.settings.strech.x);
             noiseValue += (v + 1) * 0.5 * amplitude;
             frequency *= this.settings.roughness;
             amplitude *= this.settings.persistence;

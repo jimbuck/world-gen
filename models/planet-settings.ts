@@ -1,4 +1,4 @@
-import { Vector3 } from 'three';
+import { Vector3, Vector2 } from 'three';
 
 export interface PlanetSettings {
     name: string;
@@ -22,10 +22,12 @@ export interface NoiseSettings {
     baseRoughness: number;
     roughness: number;
     persistence: number;
-    octaves: number;
+    octaves: number; // 1+
     center: Vector3;
     minValue: number;
     strength: number;
+    strech: Vector2; // 1+
+    skew: Vector3; // 0-1
 }
 
 export function createContinentNoise() {
@@ -36,7 +38,9 @@ export function createContinentNoise() {
         octaves: 4,
         center: new Vector3(0,0,0),
         minValue: 0.7,
-        strength: 0.2,
+        strength: 0.1,
+        strech: new Vector2(1, 1),
+        skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
 };
 
@@ -49,6 +53,8 @@ export function createMoutainNoise() {
         center: new Vector3(0,0,0),
         minValue: 0.6,
         strength: 0.15,
+        strech: new Vector2(1, 1),
+        skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
 };
 

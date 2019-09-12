@@ -65,7 +65,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
             updateScene(deltaT, scene, renderer, glCtx);
             renderer.render(scene, camera);
         }
-    });
+    }, []);
 
     useEffect(() => {
         controlChanges.bind(controlsChanged);
