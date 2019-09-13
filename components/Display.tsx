@@ -27,7 +27,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
 
     useEffect(() => {
         canvasRef.current.height = 720;
-        canvasRef.current.width = canvasRef.current.height * (16 / 9);
+        canvasRef.current.width = canvasRef.current.height;// * (16 / 9);
 
         const renderer = new WebGLRenderer({
             canvas: canvasRef.current,

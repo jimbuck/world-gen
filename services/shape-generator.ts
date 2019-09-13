@@ -1,5 +1,6 @@
 
 import { Vector3, Quaternion } from 'three';
+import Alea from 'alea';
 import SimplexNoise from 'simplex-noise';
 import { PlanetSettings, NoiseSettings, MaskTypes } from '../models/planet-settings';
 
@@ -11,9 +12,10 @@ export class ShapeGenerator {
     private noiseFilters: NoiseFilter[];
 
     public constructor(private settings: PlanetSettings) {
+        const prng = Alea(this.settings.seed);
         this.noiseFilters = [];
         for (let i = 0; i < this.settings.planetLayers.length; i++) {
-            this.noiseFilters[i] = new NoiseFilter(new SimplexNoise(`${this.settings.seed}_layer${i}`), this.settings.planetLayers[i].noiseSettings);
+            this.noiseFilters[i] = new NoiseFilter(new SimplexNoise(prng), this.settings.planetLayers[i].noiseSettings);
         }
     }
 

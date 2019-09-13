@@ -19,10 +19,10 @@ export default () => {
                 </Col>
             </Row>
             <Row style={{height: ""}}>
-                <Col lg={9} xs={12} className="display">
+                <Col lg={6} xs={12} className="display">
                     <Display controlChanges={controlChanges} />
                 </Col>
-                <Col lg={3} xs={12} className="controls">
+                <Col lg={6} xs={12} className="controls">
                     <Controls controlChanges={controlChanges} />
                 </Col>
             </Row>
