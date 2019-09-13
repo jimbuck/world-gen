@@ -6,16 +6,16 @@ import {
     AmbientLight,
     PointLight
 } from 'three';
-import { Planet } from '../models/planet';
+import { Planet, PlanetMesh } from '../models/planet';
 import {PlanetSettings} from '../models/planet-settings';
 import { EventShare } from '../hooks/use-event-share';
 
 export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {
     console.log(`Rendering Display...`);
-    let planet: Planet;
+    let planet: PlanetMesh;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer, context) => {
-        planet = new Planet();
+        planet = new PlanetMesh();
 
         planet.initialize();
         scene.add(planet);
