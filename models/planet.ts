@@ -5,82 +5,108 @@ import { Direction, directionsList } from './direction';
 import { ShapeGenerator } from '../services/shape-generator';
 import { PlanetSettings } from './planet-settings';
 
-export class Planet extends Group {
-    private planetFaces: PlanetFace[] = [];
+// export class Planet extends Group {
+//     private planetFaces: PlanetFace[] = [];
 
-    private shapeGenerator: ShapeGenerator;
+//     private shapeGenerator: ShapeGenerator;
 
-    public settings: PlanetSettings;
+//     public settings: PlanetSettings;
 
-    public constructor() {
-        super();
-        this.settings = Object.assign({}, this.settings, {
-            name: '',
-            seed: '',
-            resolution: 8,
-            radius: 1,
-            wireframes: true,
-            color: '#ffffff',
-            planetLayers: [],
-        });
-    }
+//     public constructor() {
+//         super();
+//         this.settings = Object.assign({}, this.settings, {
+//             name: '',
+//             seed: '',
+//             resolution: 8,
+//             radius: 1,
+//             wireframes: true,
+//             color: '#ffffff',
+//             planetLayers: [],
+//         });
+//     }
 
-    public initialize()
-    {
-        this.init();
-        this.generateMesh();
-        this.generateColors();
-    }
+//     public initialize()
+//     {
+//         this.init();
+//         this.generateMesh();
+//         this.generateColors();
+//     }
 
-    public updateSettings(newSettings: PlanetSettings)
-    {
-        Object.assign(this.settings, newSettings);
-        this.init();
-        this.generateMesh();
-    }
+//     public updateSettings(newSettings: PlanetSettings)
+//     {
+//         Object.assign(this.settings, newSettings);
+//         this.init();
+//         this.generateMesh();
+//     }
 
-    public onColorSettingsUpdated()
-    {
-        this.init();
-        this.generateColors();
-    }
+//     public onColorSettingsUpdated()
+//     {
+//         this.init();
+//         this.generateColors();
+//     }
 
-    private init() {
-        this.shapeGenerator = new ShapeGenerator(this.settings);
-        const material = new MeshPhongMaterial({
-            color: this.settings.color,
-            specular: '#222222'
-        });
-        this.remove(...this.children);
+//     private init() {
+//         this.shapeGenerator = new ShapeGenerator(this.settings);
+//         const material = new MeshPhongMaterial({
+//             color: this.settings.color,
+//             specular: '#222222'
+//         });
+//         this.remove(...this.children);
 
-        for (let i = 0; i < 6; i++) {
-            const surface = new Mesh(new Geometry(), material);
+//         for (let i = 0; i < 6; i++) {
+//             const surface = new Mesh(new Geometry(), material);
 
-            this.planetFaces[i] = new PlanetFace(surface, directionsList[i]);
-            this.add(this.planetFaces[i]);
-        }
-    }
+//             this.planetFaces[i] = new PlanetFace(surface, directionsList[i]);
+//             this.add(this.planetFaces[i]);
+//         }
+//     }
 
-    private generateMesh() {
-        this.planetFaces.forEach(face => {
-            face.BuildMesh(this.settings, this.shapeGenerator);
-            if (this.settings.wireframes) face.BuildWireframes();
-        });
-    }
+//     private generateMesh() {
+//         this.planetFaces.forEach(face => {
+//             face.BuildMesh(this.settings, this.shapeGenerator);
+//             if (this.settings.wireframes) face.BuildWireframes();
+//         });
+//     }
 
-    private generateColors() {
-        this.planetFaces.forEach(face => {
-            const faceMaterial = face.surface.material as MeshPhongMaterial;
-            faceMaterial.color = new Color(this.settings.color);
-        });
-    }
-}
+//     private generateColors() {
+//         this.planetFaces.forEach(face => {
+//             const faceMaterial = face.surface.material as MeshPhongMaterial;
+//             faceMaterial.color = new Color(this.settings.color);
+//         });
+//     }
+// }
 
 export class PlanetMesh extends Mesh {
     private faceGenerators: PlanetFaceGenerator[] = [];
     private shapeGenerator: ShapeGenerator;
     private wireframeLines: LineSegments;
     public settings: PlanetSettings;
+
+    private _planetResolution: number;
+    public get planetResolution(): number {
+        return this._planetResolution;
+    }
+    public set planetResolution(value: number) {
+        this._planetResolution = Math.max(Math.min(value, 256), 2);
+        this.generateMesh();
+        this.generateColors();
+    }
+
+    private _planetColor: string;
+    public get planetColor() {
+        return this._planetColor;
+    }
+    public set planetColor(value: string) {
+        this._planetColor = value;
+        this.generateColors();
+    }
+
+    public get wireframes() {
+        return this.wireframeLines.visible;
+    }
+    public set wireframes(value: boolean) {
+        this.wireframeLines.visible = value;
+    }
 
     public constructor() {
         super();
@@ -92,6 +118,11 @@ export class PlanetMesh extends Mesh {
             wireframes: true,
             color: '#999999',
             planetLayers: [],
+        });
+
+        this.material = new MeshPhongMaterial({
+            color: '#f0f0f0',
+            specular: '#222222'
         });
 
         for (let i = 0; i < 6; i++) {
@@ -114,6 +145,7 @@ export class PlanetMesh extends Mesh {
         Object.assign(this.settings, newSettings);
         this.init();
         this.generateMesh();
+        this.generateColors();
     }
 
     public onColorSettingsUpdated()
@@ -123,38 +155,27 @@ export class PlanetMesh extends Mesh {
     }
 
     private init() {
-        this.material = new MeshPhongMaterial({
-            color: this.settings.color,
-            specular: '#222222'
-        });
-
         this.shapeGenerator = new ShapeGenerator(this.settings);
     }
 
     private generateMesh() {
         this.geometry.dispose();
         this.geometry = new Geometry();
-        let faceGeometry: Geometry;
         this.faceGenerators.forEach(face => {
-            faceGeometry = face.BuildMesh(this.settings, this.shapeGenerator);
-            (this.geometry as Geometry).merge(faceGeometry);
+            (this.geometry as Geometry).merge(face.BuildMesh(this.settings.resolution, this.shapeGenerator));
         });
 
         this.geometry.mergeVertices();
         this.geometry.computeFaceNormals();
         this.geometry.computeVertexNormals();
 
-        this.buildWireframes(this.settings.wireframes);
-    }
-
-    private buildWireframes(add: boolean) {
+        // Build the wireframes
         this.wireframeLines.geometry.dispose();
         this.wireframeLines.geometry = new WireframeGeometry(this.geometry);
         (this.wireframeLines.material as LineBasicMaterial).color = new Color(0x000000);
         (this.wireframeLines.material as LineBasicMaterial).linewidth = 2;
         (this.wireframeLines.material as LineBasicMaterial).opacity = 0.25;
         (this.wireframeLines.material as LineBasicMaterial).transparent = true;
-        this.wireframeLines.visible = add;
     }
 
     private generateColors() {
@@ -178,14 +199,14 @@ class PlanetFaceGenerator {
         this.geometry = new Geometry();
     }
 
-    public BuildMesh(planetSettings: PlanetSettings, shapeGenerator: ShapeGenerator) {
+    public BuildMesh(resolution: number, shapeGenerator: ShapeGenerator) {
         const vertices: Vector3[] = [];//new Array(this.resolution * this.resolution);
         const triangles: Face3[] = [];//[(this.resolution - 1) * (this.resolution - 1) * 2];
 
-        for (let y = 0; y < planetSettings.resolution; y++) {
-            for (let x = 0; x < planetSettings.resolution; x++) {
-                const i = x + y * planetSettings.resolution;
-                const percent = new Vector2(x, y).divideScalar(planetSettings.resolution - 1);
+        for (let y = 0; y < resolution; y++) {
+            for (let x = 0; x < resolution; x++) {
+                const i = x + y * resolution;
+                const percent = new Vector2(x, y).divideScalar(resolution - 1);
                 const pointOnUnitCube = this.localUp.vector.clone()
                     .add(this.axisA.clone().multiplyScalar((percent.x - 0.5) * 2))
                     .add(this.axisB.clone().multiplyScalar((percent.y - 0.5) * 2));
@@ -195,11 +216,11 @@ class PlanetFaceGenerator {
 
                 //console.log(`${this.localUp.name}: ${x}x${y} ->`, vertices[i],  ` -> ${vertices[i]}`);
 
-                if (x != planetSettings.resolution - 1 && y != planetSettings.resolution - 1) {
+                if (x != resolution - 1 && y != resolution - 1) {
 
                     triangles.push(
-                        new Face3(i, i + planetSettings.resolution + 1, i + planetSettings.resolution),
-                        new Face3(i, i + 1, i + planetSettings.resolution + 1));
+                        new Face3(i, i + resolution + 1, i + resolution),
+                        new Face3(i, i + 1, i + resolution + 1));
                 }
             }
         }

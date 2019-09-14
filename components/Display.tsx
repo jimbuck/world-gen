@@ -4,19 +4,17 @@ import {
     WebGLRenderer, Scene, PerspectiveCamera, Color,
     AxesHelper,
     AmbientLight,
-    PointLight
+    DirectionalLight
 } from 'three';
-import { Planet, PlanetMesh } from '../models/planet';
+import { PlanetMesh } from '../models/planet';
 import {PlanetSettings} from '../models/planet-settings';
 import { EventShare } from '../hooks/use-event-share';
 
 export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {
     console.log(`Rendering Display...`);
-    let planet: PlanetMesh;
+    let planet: PlanetMesh = new PlanetMesh();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer, context) => {
-        planet = new PlanetMesh();
-
         planet.initialize();
         scene.add(planet);
     };
@@ -26,7 +24,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     };
 
     useEffect(() => {
-        canvasRef.current.height = 720;
+        canvasRef.current.height = 1080;
         canvasRef.current.width = canvasRef.current.height;// * (16 / 9);
 
         const renderer = new WebGLRenderer({
@@ -37,19 +35,20 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         const glCtx = renderer.getContext();
 
         const scene = new Scene();
-        scene.background = new Color('#333333');
-        scene.add(new AxesHelper(5));
+        scene.background = new Color('#000000');
+        //scene.add(new AxesHelper(4));
 
         const camera = new PerspectiveCamera(60, canvasRef.current.width / canvasRef.current.height, 0.1, 1000);
-        camera.position.set(5, 3, 5);
+        camera.position.set(0, 0, 6);
         camera.lookAt(0, 0, 0);
 
-        const ambientLight = new AmbientLight('#ffffff', 1)
+        const ambientLight = new AmbientLight('#ffffff', 0.01)
         scene.add(ambientLight);
 
-        const pointLight = new PointLight('#efe8a9', 0.5)
-        pointLight.position.set(5, 10, 5)
-        scene.add(pointLight);
+        const directionalLight = new DirectionalLight('#efe8e9', 0.8)
+        directionalLight.position.set(-1000, 0, 1000)
+        directionalLight.target = planet;
+        scene.add(directionalLight);
 
         // Call user's callback for initialization
         initScene(scene, renderer, glCtx);
@@ -73,6 +72,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         return () => controlChanges.unbind(controlsChanged);
 
         function controlsChanged(settings: PlanetSettings) {
+            if(!planet) return;
             //console.log('Planet updated!', { ...settings });
             planet.updateSettings(settings);
         }

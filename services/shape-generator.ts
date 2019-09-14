@@ -6,8 +6,6 @@ import { PlanetSettings, NoiseSettings, MaskTypes } from '../models/planet-setti
 
 const MAX_RENDER_RADIUS = 3;
 
-const VECTOR3_IDENTITY = new Vector3(1, 1, 1);
-
 export class ShapeGenerator {
     private noiseFilters: NoiseFilter[];
 

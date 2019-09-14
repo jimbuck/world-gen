@@ -37,7 +37,7 @@ const tabStyles = {
 
 export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetSettings>> }) => {
     const [activeTab, setActiveTab] = useStatePersisted('world-gen:active-tab', 'planet-info-tab');
-    const [name, setName] = useStatePersisted('world-gen:planet-name', 'New Planet');
+    const [name, setName] = useStatePersisted('world-gen:planet-name', '');
     const [seed, setSeed] = useStatePersisted('world-gen:seed', randomSeed());
     const [autoUpdate, setAutoUpdate] = useStatePersisted('world-gen:auto-update', true);
     const [wireframes, setWireframes] = useStatePersisted('world-gen:wireframes', true);
@@ -47,20 +47,20 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
 
     const layers = useStateArray<PlanetLayer>([
         //const layers = useStateArrayPersisted<PlanetLayer>('world-gen:layers', [{
-        {
-            id: guid(),
-            label: `Continent Layer`,
-            enabled: true,
-            maskType: MaskTypes.None,
-            noiseSettings: createContinentNoise()
-        },
         // {
         //     id: guid(),
-        //     label: `Mountain Layer`,
+        //     label: `Continent Layer`,
         //     enabled: true,
         //     maskType: MaskTypes.None,
-        //     noiseSettings: createMoutainNoise()
-        // }
+        //     noiseSettings: createContinentNoise()
+        // },
+        {
+            id: guid(),
+            label: `Mountain Layer`,
+            enabled: true,
+            maskType: MaskTypes.None,
+            noiseSettings: createMoutainNoise()
+        }
     ]);
 
     // Trigger a change if auto-update is enabled.

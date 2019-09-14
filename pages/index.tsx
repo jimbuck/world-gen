@@ -10,7 +10,7 @@ import {PlanetSettings} from '../models/planet-settings';
 
 export default () => {
     const controlChanges = useEventShare<PlanetSettings>();
-    
+
     return typeof window === 'undefined' ? null : (
         <Layout>
             <Row>
