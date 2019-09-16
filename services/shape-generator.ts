@@ -26,20 +26,20 @@ export class ShapeGenerator {
             firstLayerValue = prevLayerValue = this.noiseFilters[0].Evaluate(pointOnUnitSphere);
             if (this.settings.planetLayers[0].enabled) {
                 elevation = firstLayerValue;
-                //console.log(prevLayerValue);
             }
         }
 
         for (let i = 1; i < this.noiseFilters.length; i++) {
             if (this.settings.planetLayers[i].enabled) {
-                const mask = (this.settings.planetLayers[i].maskType === MaskTypes.FirstLayer) ? firstLayerValue :
-                    (this.settings.planetLayers[i].maskType === MaskTypes.PrevLayer) ? prevLayerValue : 1;
+                const mask = (this.settings.planetLayers[i].maskType === MaskTypes.FirstLayer && firstLayerValue > this.settings.planetLayers[0].noiseSettings.minValue) ? 1 :
+                    (this.settings.planetLayers[i].maskType === MaskTypes.PrevLayer && prevLayerValue > this.settings.planetLayers[i-1].noiseSettings.minValue) ? 1 : 
+                    (this.settings.planetLayers[i].maskType === MaskTypes.None) ? 1 : 0;
+
                 prevLayerValue = this.noiseFilters[i].Evaluate(pointOnUnitSphere);
-                elevation += prevLayerValue * mask;
-                //console.log(prevLayerValue);
+                elevation = Math.max(elevation, prevLayerValue * mask);
             }
         }
-        return pointOnUnitSphere.clone().multiplyScalar(Math.min(this.settings.radius, MAX_RENDER_RADIUS) * (1 + elevation));
+        return pointOnUnitSphere.clone().multiplyScalar(Math.min(this.settings.radius, MAX_RENDER_RADIUS) * (1+elevation));
     }
 }
 
@@ -51,19 +51,23 @@ export class NoiseFilter {
         let noiseValue = 0;
         let frequency = this.settings.baseRoughness;
         let amplitude = 1;
+        let ampTotal = amplitude;
 
         let q = new Quaternion().setFromAxisAngle(this.settings.skew, Math.PI / 2);
         for (let i = 0; i < this.settings.octaves; i++) {
-            let p = point.clone().multiplyScalar(frequency).add(this.settings.center);
+            let p = point.clone().multiplyScalar(frequency).add(this.settings.offset);
             p = p.applyQuaternion(q);
-            let v = this.noise.noise3D(p.x/this.settings.strech.x, p.y/this.settings.strech.y, p.z/this.settings.strech.x);
-            noiseValue += (v + 1) * 0.5 * amplitude;
+            let v = (this.noise.noise3D(p.x/this.settings.strech.x, p.y/this.settings.strech.y, p.z/this.settings.strech.x));// + 1) / 2;
+            noiseValue += v * amplitude;
             frequency *= this.settings.roughness;
             amplitude *= this.settings.persistence;
+            ampTotal += amplitude;
         }
 
-        noiseValue = Math.max(0, noiseValue - this.settings.minValue);
+        noiseValue = noiseValue / ampTotal;
+        noiseValue = Math.max(noiseValue, this.settings.minValue);
         return noiseValue * this.settings.strength;
     }
 }
+
 

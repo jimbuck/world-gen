@@ -12,6 +12,7 @@ import { EventShare } from '../hooks/use-event-share';
 
 export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {
     console.log(`Rendering Display...`);
+    let rotate = true;
     let planet: PlanetMesh = new PlanetMesh();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer, context) => {
@@ -20,7 +21,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     };
 
     const updateScene = (deltaT: number, scene: Scene, renderer, context) => {
-        planet.rotation.y = deltaT * 0.5;
+        if(rotate) planet.rotation.y = deltaT * 0.5;
     };
 
     useEffect(() => {
@@ -42,7 +43,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         camera.position.set(0, 0, 6);
         camera.lookAt(0, 0, 0);
 
-        const ambientLight = new AmbientLight('#ffffff', 0.01)
+        const ambientLight = new AmbientLight('#ffffff', 0.15)
         scene.add(ambientLight);
 
         const directionalLight = new DirectionalLight('#efe8e9', 0.8)
@@ -72,6 +73,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         return () => controlChanges.unbind(controlsChanged);
 
         function controlsChanged(settings: PlanetSettings) {
+            rotate = settings.rotate;
             if(!planet) return;
             //console.log('Planet updated!', { ...settings });
             planet.updateSettings(settings);

@@ -12,13 +12,15 @@ import Octicon, { Sync } from '@primer/octicons-react';
 const controls = {
 	autoUpdateCheckbox: 'autoUpdateCheckbox',
 	wireframesCheckbox: 'wireframesCheckbox',
-	resolutionSlider: 'resolutionSlider'
+	resolutionSlider: 'resolutionSlider',
+	rotateCheckbox: 'rotateCheckbox'
 };
 
-export default ({ autoUpdate, wireframes, resolution, handleFormChange }: {
+export default ({ autoUpdate, wireframes, resolution, rotate, handleFormChange }: {
 		autoUpdate: boolean,
 		wireframes: boolean,
 		resolution: number,
+		rotate: boolean,
 		handleFormChange: (e: any) => void
 }) => {
 
@@ -33,6 +35,9 @@ export default ({ autoUpdate, wireframes, resolution, handleFormChange }: {
 						<Form.Group controlId={controls.resolutionSlider}>
 								<Form.Label>Resolution: {resolution}</Form.Label>
 								<Form.Control type="range" min={2} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
+						</Form.Group>
+						<Form.Group controlId={controls.rotateCheckbox}>
+								<Form.Check type='checkbox' label='Rotate' checked={rotate} onChange={handleFormChange} />
 						</Form.Group>
 				</>
 		);

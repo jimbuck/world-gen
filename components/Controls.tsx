@@ -25,7 +25,8 @@ const controls = {
     autoUpdateCheckbox: 'autoUpdateCheckbox',
     wireframesCheckbox: 'wireframesCheckbox',
     resolutionSlider: 'resolutionSlider',
-    radiusSlider: 'radiusSlider'
+    radiusSlider: 'radiusSlider',
+    rotateCheckbox: 'rotateCheckbox'
 };
 
 const tabClasses = 'border-left border-right border-bottom';
@@ -43,24 +44,25 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
     const [wireframes, setWireframes] = useStatePersisted('world-gen:wireframes', true);
     const [resolution, setResolution] = useStatePersisted('world-gen:resolution', 30);
     const [radius, setRadius] = useStatePersisted('world-gen:radius', 1);
+    const [rotate, setRotate] = useStatePersisted('world-gen:rotate', true);
     const [color, setColor] = useState('#2D6086');
 
     const layers = useStateArray<PlanetLayer>([
         //const layers = useStateArrayPersisted<PlanetLayer>('world-gen:layers', [{
-        // {
-        //     id: guid(),
-        //     label: `Continent Layer`,
-        //     enabled: true,
-        //     maskType: MaskTypes.None,
-        //     noiseSettings: createContinentNoise()
-        // },
         {
             id: guid(),
-            label: `Mountain Layer`,
+            label: `Continent Layer`,
             enabled: true,
             maskType: MaskTypes.None,
-            noiseSettings: createMoutainNoise()
-        }
+            noiseSettings: createContinentNoise()
+        },
+        // {
+        //     id: guid(),
+        //     label: `Mountain Layer`,
+        //     enabled: true,
+        //     maskType: MaskTypes.None,
+        //     noiseSettings: createMoutainNoise()
+        // }
     ]);
 
     // Trigger a change if auto-update is enabled.
@@ -84,7 +86,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
                                 <LayerPanel seed={seed} layers={layers} />
                             </Tab>
                             <Tab id='graphics-tab' eventKey='graphics-tab' title='Graphics' className={tabClasses} style={tabStyles}>
-                                <GraphicsPanel {...{ autoUpdate, wireframes, resolution, handleFormChange }} />
+                                <GraphicsPanel {...{ autoUpdate, wireframes, resolution, rotate, handleFormChange }} />
                             </Tab>
                         </Tabs>
                         {autoUpdate ? null : <Button block onClick={emitChanges} style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>Update <Octicon icon={Check} /></Button>}
@@ -114,6 +116,8 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
             case controls.radiusSlider:
                 setRadius(parseFloat(e.target.value));
                 break;
+            case controls.rotateCheckbox:
+                setRotate(e.target.checked);
         }
     }
 
@@ -126,6 +130,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<Partial<PlanetS
     }
 
     function emitChanges() {
-        controlChanges.emit({ name, seed, resolution, radius, color, wireframes, planetLayers: layers.current });
+        controlChanges.emit({ name, seed, resolution, radius, color, wireframes, rotate, planetLayers: layers.current });
     }
 }

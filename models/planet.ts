@@ -1,5 +1,5 @@
 
-import { MeshPhongMaterial, Group, Mesh, Geometry, Color, Object3D, Vector3, Face3, Vector2, WireframeGeometry, LineSegments, LineBasicMaterial, BufferGeometry} from 'three';
+import { MeshPhongMaterial, Mesh, Geometry, Color, Object3D, Vector3, Face3, Vector2, WireframeGeometry, LineSegments, LineBasicMaterial, VertexColors} from 'three';
 
 import { Direction, directionsList } from './direction';
 import { ShapeGenerator } from '../services/shape-generator';
@@ -180,7 +180,30 @@ export class PlanetMesh extends Mesh {
 
     private generateColors() {
         const faceMaterial = this.material as MeshPhongMaterial;
-        faceMaterial.color = new Color(this.settings.color);
+        faceMaterial.vertexColors = VertexColors;
+        faceMaterial.color = new Color('#ffffff');// new Color(this.settings.color);
+
+        //let [min, max] = [9999, 0];
+        const center = new Vector3(0,0,0);
+        const geometry = this.geometry as Geometry;
+        geometry.faces.forEach(face => {
+            const colors = [face.a, face.b, face.c].map(i => {
+                const dist = geometry.vertices[i].distanceTo(center) - this.settings.radius;
+                // min = Math.min(min, dist);
+                // max = Math.max(max, dist);
+                if(dist > 0) {
+                    // Land
+                    return new Color('#008000');
+                } else {
+
+                    // Water
+                    return new Color('#000080');
+                }
+            });
+
+            face.vertexColors = colors;
+        });
+        // console.log(`Min: ${min}, Max: ${max}`);
     }
 }
 
@@ -213,6 +236,7 @@ class PlanetFaceGenerator {
 
                 const pointOnUnitSphere = pointOnUnitCube.clone().normalize();
                 vertices[i] = shapeGenerator.CalculatePointOnPlanet(pointOnUnitSphere);
+
 
                 //console.log(`${this.localUp.name}: ${x}x${y} ->`, vertices[i],  ` -> ${vertices[i]}`);
 

@@ -6,6 +6,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 
+import {} from '../editors/FieldEditors';
+
 import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
 
@@ -47,10 +49,10 @@ export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomi
                 <Form.Label>Radius: {radius}</Form.Label>
                 <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
             </Form.Group>
-            <Form.Group>
+            {/* <Form.Group>
                 <Form.Label>Color: {color}</Form.Label>
                 <SliderPicker color={color} onChangeComplete={(e) => handleColorChange(e.hex.toUpperCase())} />
-            </Form.Group>
+            </Form.Group> */}
         </>
     );
 }
