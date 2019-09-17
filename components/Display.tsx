@@ -4,7 +4,8 @@ import {
     WebGLRenderer, Scene, PerspectiveCamera, Color,
     AxesHelper,
     AmbientLight,
-    DirectionalLight
+    DirectionalLight,
+    MeshPhongMaterial
 } from 'three';
 import { PlanetMesh } from '../models/planet';
 import {PlanetSettings} from '../models/planet-settings';
@@ -15,12 +16,12 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
     let rotate = true;
     let planet: PlanetMesh = new PlanetMesh();
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const initScene = (scene: Scene, renderer, context) => {
+    const initScene = (scene: Scene, renderer) => {
         planet.initialize();
         scene.add(planet);
     };
 
-    const updateScene = (deltaT: number, scene: Scene, renderer, context) => {
+    const updateScene = (deltaT: number, scene: Scene, renderer) => {
         if(rotate) planet.rotation.y = deltaT * 0.5;
     };
 
@@ -33,7 +34,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
             antialias: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
-        const glCtx = renderer.getContext();
 
         const scene = new Scene();
         scene.background = new Color('#000000');
@@ -52,7 +52,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
         scene.add(directionalLight);
 
         // Call user's callback for initialization
-        initScene(scene, renderer, glCtx);
+        initScene(scene, renderer);
 
         renderer.setAnimationLoop(handleAnimationFrame);
 
@@ -60,9 +60,9 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
             renderer.setAnimationLoop(null);
         }
 
-        function handleAnimationFrame() {
-            const deltaT = Date.now() * 0.001;
-            updateScene(deltaT, scene, renderer, glCtx);
+        function handleAnimationFrame(deltaT) {
+            deltaT = deltaT / 1000;
+            updateScene(deltaT, scene, renderer);
             renderer.render(scene, camera);
         }
     }, []);
