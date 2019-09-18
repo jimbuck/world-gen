@@ -10,8 +10,8 @@ import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
 
 import { PlanetReducer, PlanetEditorState } from '../../hooks/use-planet-reducer';
-import { randomSeed } from '../../services/helpers';
-import { NumberSlider } from '../editors/FieldEditors';
+import { randomSeed } from '../../../common/services/helpers';
+import { NumberSlider } from '../../../common/components/FieldEditors';
 
 const controls = {
     nameInput: 'nameInput',

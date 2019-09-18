@@ -13,10 +13,10 @@ import LayerPanel from './panels/LayerPanel';
 import InfoPanel from './panels/InfoPanel';
 
 import { PlanetSettings, PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise } from '../models/planet-settings';
-import { useStateArray, useStateArrayPersisted } from '../hooks/use-state-array';
-import useStatePersisted from '../hooks/use-state-persisted';
+import { useStateArray, useStateArrayPersisted } from '../../common/hooks/use-state-array';
+import useStatePersisted from '../../common/hooks/use-state-persisted';
 import { PlanetReducer } from '../hooks/use-planet-reducer';
-import { guid, randomSeed } from '../services/helpers';
+import { guid, randomSeed } from '../../common/services/helpers';
 import GraphicsPanel from './panels/GraphicsPanel';
 
 const controls = {

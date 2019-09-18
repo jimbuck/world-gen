@@ -1,10 +1,10 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-import Layout from '../components/Layout';
-import Display from '../components/Display';
-import Controls from '../components/Controls';
-import usePlanetReducer from '../hooks/use-planet-reducer';
+import Layout from '../lib/components/Layout';
+import Display from '../lib/components/Display';
+import Controls from '../lib/components/Controls';
+import usePlanetReducer from '../lib/hooks/use-planet-reducer';
 
 export default () => {
 	const planetReducer = usePlanetReducer();

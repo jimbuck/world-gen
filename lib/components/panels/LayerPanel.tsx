@@ -6,11 +6,11 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Octicon, { Trashcan } from '@primer/octicons-react';
 
-import { NumberSlider, Vector2Slider, Vector3Slider} from '../editors/FieldEditors';
+import { NumberSlider, Vector2Slider, Vector3Slider} from '../../../common/components/FieldEditors';
 
 import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, NoiseSettings } from '../../models/planet-settings';
 import { PlanetReducer, PlanetEditorAction } from '../../hooks/use-planet-reducer';
-import { guid } from '../../services/helpers';
+import { guid } from '../../../common/services/helpers';
 
 export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
     return (
