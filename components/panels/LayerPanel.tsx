@@ -9,13 +9,13 @@ import Octicon, { Trashcan } from '@primer/octicons-react';
 import { NumberSlider, Vector2Slider, Vector3Slider} from '../editors/FieldEditors';
 
 import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, NoiseSettings } from '../../models/planet-settings';
-import { StateArray } from '../../hooks/use-state-array';
+import { PlanetReducer, PlanetEditorAction } from '../../hooks/use-planet-reducer';
 import { guid } from '../../services/helpers';
 
-export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) => {
+export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
     return (
         <ListGroup as="ul" variant='flush'>
-            {layers.current.map((layer, i) => (
+            {planetReducer.planet.terrainLayers.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
                     <Form.Group>
                         <div className='d-flex mb-2'>
@@ -24,7 +24,7 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
                                 <Octicon icon={Trashcan} />
                             </Button>
                         </div>
-                        <Form.Control type="input" name='label' value={layer.label} onChange={handleLayerChange(layer, i)} />
+                        <Form.Control type="input" name='label' value='' onChange={handleLayerChange(layer, i)} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
@@ -68,49 +68,61 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
 
     function addLayer(type: string) {
         return function () {
-            layers.push({
-                id: guid(),
-                label: `${type} ${layers.current.length}`,
-                enabled: true,
-                maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
-                noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
+            planetReducer.dispatch({
+                field: 'terrainLayers',
+                action: 'push',
+                value: {
+                    id: guid(),
+                    enabled: true,
+                    maskType: planetReducer.planet.terrainLayers.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
+                    noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
+                }
             });
         }
     }
 
     function removeLayer(index: number) {
         return function () {
-            layers.removeAt(index);
+            planetReducer.dispatch({
+                field: 'terrainLayers',
+                action: 'removeAt',
+                value: index
+            });
         }
     }
 
     function handleNoiseChange(field: keyof NoiseSettings, layer: PlanetLayer, index: number) {
-        let updatedLayer = { ...layer };
+        let fields = { ...layer };
 
         return function (value: any) {
-            layer.noiseSettings[field] = value;
-            layers.update(index, updatedLayer);
+            fields.noiseSettings[field] = value;
+            planetReducer.dispatch({
+                field: 'terrainLayers',
+                action: 'update',
+                value: { index, fields }
+            });
         };
     }
 
     function handleLayerChange(layer: PlanetLayer, index: number) {
 
-        let updatedLayer = { ...layer };
+        let fields = { ...layer };
 
         return function (e: any) {
             //console.log(`${e.target.name} -> ${e.target.value}`);
             switch (e.target.name) {
-                case 'label':
-                    updatedLayer.label = e.target.value;
-                    break;
                 case 'enabled':
-                    updatedLayer.enabled = e.target.checked;
+                    fields.enabled = e.target.checked;
                     break;
                 case 'maskType':
-                    updatedLayer.maskType = e.target.value;
+                    fields.maskType = e.target.value;
             }
 
-            layers.update(index, updatedLayer);
+            planetReducer.dispatch({
+                field: 'terrainLayers',
+                action: 'update',
+                value: { index, fields }
+            });
         };
     }
 }

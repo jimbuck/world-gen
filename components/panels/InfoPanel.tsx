@@ -6,10 +6,12 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-import {} from '../editors/FieldEditors';
-
 import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
+
+import { PlanetReducer, PlanetEditorState } from '../../hooks/use-planet-reducer';
+import { randomSeed } from '../../services/helpers';
+import { NumberSlider } from '../editors/FieldEditors';
 
 const controls = {
     nameInput: 'nameInput',
@@ -18,26 +20,20 @@ const controls = {
     colorPicker: 'colorPicker'
 };
 
-export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomization, handleColorChange }: {
-    name: string,
-    seed: string,
-    radius: number,
-    color: string,
-    handleFormChange: (e: any) => void,
-    handleSeedRandomization: () => void,
-    handleColorChange: (newColor: string) => void
+export default ({ planetReducer }: {
+    planetReducer: PlanetReducer
 }) => {
 
     return (
         <>
             <Form.Group controlId={controls.nameInput}>
                 <Form.Label>Name:</Form.Label>
-                <Form.Control type="input" value={name+''} onChange={handleFormChange}/>
+                <Form.Control type="input" value={planetReducer.planet.name+''} onChange={handleFormChange('name')}/>
             </Form.Group>
             <Form.Group controlId={controls.seedInput}>
                 <Form.Label>Seed:</Form.Label>
                 <InputGroup>
-                    <Form.Control type="input" value={seed + ''} onChange={handleFormChange} />
+                    <Form.Control type="input" value={planetReducer.planet.seed + ''} onChange={handleFormChange('seed')} />
                     <InputGroup.Append>
                         <Button variant="outline-secondary" title='Randomize' onClick={handleSeedRandomization}>
                             <Octicon icon={Sync} />
@@ -45,14 +41,36 @@ export default ({ name, seed, radius, color, handleFormChange, handleSeedRandomi
                     </InputGroup.Append>
                 </InputGroup>
             </Form.Group>
-            <Form.Group controlId={controls.radiusSlider}>
-                <Form.Label>Radius: {radius}</Form.Label>
-                <Form.Control type="range" min={0.25} max={16} step={0.05} value={radius+''} onChange={handleFormChange} />
-            </Form.Group>
+            <NumberSlider label='Radius' min={0.25} max={16} step={0.05} value={planetReducer.planet.radius} onChange={handleFormChange('radius')} />
             {/* <Form.Group>
                 <Form.Label>Color: {color}</Form.Label>
                 <SliderPicker color={color} onChangeComplete={(e) => handleColorChange(e.hex.toUpperCase())} />
             </Form.Group> */}
         </>
     );
+
+    function handleFormChange(field: keyof PlanetEditorState) {
+        return function (e: any) {
+            planetReducer.dispatch({
+                field,
+                value: e.target.value
+            });
+        }
+    }
+
+    function handleFloatChange(field: keyof PlanetEditorState) {
+        return function (e: any) {
+            planetReducer.dispatch({
+                field,
+                value: Number.parseFloat(e.target.value)
+            });
+        }
+    }
+
+    function handleSeedRandomization() {
+        planetReducer.dispatch({
+            field: 'seed',
+            value: randomSeed()
+        });
+    }
 }

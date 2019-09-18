@@ -2,11 +2,11 @@
 import { MeshPhongMaterial, Geometry, Color, Vector3, VertexColors} from 'three';
 
 import { ShapeGenerator } from '../services/shape-generator';
-import { PlanetSettings } from './planet-settings';
 import { QuadSphereMesh } from './quad-sphere-mesh';
+import { PlanetLayer } from './planet-settings';
 
 export class PlanetMesh extends QuadSphereMesh {
-    public settings: PlanetSettings;
+    private shapeGenerator: ShapeGenerator;
 
     private _planetColor: string;
     public get planetColor() {
@@ -14,8 +14,13 @@ export class PlanetMesh extends QuadSphereMesh {
     }
     public set planetColor(value: string) {
         this._planetColor = value;
-        this.regenerateColors();
+        this.regenerateShading();
     }
+
+    public name: string;
+    public seed: string;
+
+    public terrainLayers: PlanetLayer[] = [];
 
     public constructor(resolution?: number) {
         super(1, resolution || 32, new MeshPhongMaterial({
@@ -23,47 +28,25 @@ export class PlanetMesh extends QuadSphereMesh {
             specular: '#222222'
         }));
 
-        this.settings = Object.assign({}, this.settings, {
-            name: '',
-            seed: '',
-            resolution: 8,
-            radius: 1,
-            wireframes: true,
-            color: '#999999',
-            planetLayers: [],
-        });
+        this.shapeGenerator = new ShapeGenerator(this);
     }
 
     public initialize()
     {
         this.regenerateMesh();
-        this.regenerateTerrain(new ShapeGenerator(this.settings));
-        this.regenerateColors();
+        this.regenerateTerrain();
+        this.regenerateShading();
     }
 
-    public updateSettings(newSettings: PlanetSettings)
-    {
-        Object.assign(this.settings, newSettings);
-        //this.regenerateMesh();
-        this.regenerateTerrain(new ShapeGenerator(this.settings));
-        this.regenerateColors();
-        this.wireframes = this.settings.wireframes;
-    }
-
-    public onColorSettingsUpdated()
-    {
-        this.regenerateColors();
-    }
-
-    public regenerateTerrain(shapeGenerator: ShapeGenerator) {
+    public regenerateTerrain() {
         const geometry = this.geometry as Geometry;
 
-        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex.normalize()).multiplyScalar(this.radius));
+        geometry.vertices = geometry.vertices.map(vertex => this.shapeGenerator.CalculatePointOnPlanet(vertex.normalize()).multiplyScalar(this.radius));
         geometry.computeVertexNormals();
         geometry.computeFaceNormals();
     }
 
-    public regenerateColors() {
+    public regenerateShading() {
         const faceMaterial = this.material as MeshPhongMaterial;
         faceMaterial.vertexColors = VertexColors;
         faceMaterial.color = new Color('#ffffff');// new Color(this.settings.color);
@@ -73,7 +56,7 @@ export class PlanetMesh extends QuadSphereMesh {
         const geometry = this.geometry as Geometry;
         geometry.faces.forEach(face => {
             const colors = [face.a, face.b, face.c].map(i => {
-                const dist = geometry.vertices[i].distanceTo(center) - this.settings.radius;
+                const dist = geometry.vertices[i].distanceTo(center) - this.radius;
                 // min = Math.min(min, dist);
                 // max = Math.max(max, dist);
                 if(dist > 0) {

@@ -1,28 +1,19 @@
 
 import { useEffect, useRef } from 'react';
-import {
-    WebGLRenderer, Scene, PerspectiveCamera, Color,
-    AxesHelper,
-    AmbientLight,
-    DirectionalLight,
-    MeshPhongMaterial
-} from 'three';
-import { PlanetMesh } from '../models/planet';
-import {PlanetSettings} from '../models/planet-settings';
-import { EventShare } from '../hooks/use-event-share';
+import { WebGLRenderer, Scene, PerspectiveCamera, Color, AxesHelper, AmbientLight, DirectionalLight } from 'three';
+import { PlanetReducer } from '../hooks/use-planet-reducer';
 
-export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings> }) => {
+export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
     console.log(`Rendering Display...`);
     let rotate = true;
-    let planet: PlanetMesh = new PlanetMesh();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer) => {
-        planet.initialize();
-        scene.add(planet);
+        planetReducer.planet.initialize();
+        scene.add(planetReducer.planet);
     };
 
     const updateScene = (deltaT: number, scene: Scene, renderer) => {
-        if(rotate) planet.rotation.y = deltaT * 0.5;
+        if(rotate) planetReducer.planet.rotation.y = deltaT * 0.5;
     };
 
     useEffect(() => {
@@ -48,7 +39,7 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
 
         const directionalLight = new DirectionalLight('#efe8e9', 0.8)
         directionalLight.position.set(-1000, 0, 1000)
-        directionalLight.target = planet;
+        directionalLight.target = planetReducer.planet;
         scene.add(directionalLight);
 
         // Call user's callback for initialization
@@ -66,19 +57,6 @@ export default ({ controlChanges }: { controlChanges: EventShare<PlanetSettings>
             renderer.render(scene, camera);
         }
     }, []);
-
-    useEffect(() => {
-        controlChanges.bind(controlsChanged);
-
-        return () => controlChanges.unbind(controlsChanged);
-
-        function controlsChanged(settings: PlanetSettings) {
-            rotate = settings.rotate;
-            if(!planet) return;
-            //console.log('Planet updated!', { ...settings });
-            planet.updateSettings(settings);
-        }
-    });
 
     return <canvas ref={canvasRef} style={{ width: '100%' }} />
 };

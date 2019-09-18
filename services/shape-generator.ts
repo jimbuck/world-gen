@@ -2,18 +2,24 @@
 import { Vector3, Quaternion } from 'three';
 import Alea from 'alea';
 import SimplexNoise from 'simplex-noise';
-import { PlanetSettings, NoiseSettings, MaskTypes } from '../models/planet-settings';
+import { PlanetLayer, NoiseSettings, MaskTypes } from '../models/planet-settings';
+import { PlanetMesh } from '../models/planet';
 
 const MAX_RENDER_RADIUS = 3;
 
 export class ShapeGenerator {
-    private noiseFilters: NoiseFilter[];
+    private _noiseFilters: NoiseFilter[];
+    private _radius: number;
+    private _layers: PlanetLayer[];
 
-    public constructor(private settings: PlanetSettings) {
-        const prng = Alea(this.settings.seed);
-        this.noiseFilters = [];
-        for (let i = 0; i < this.settings.planetLayers.length; i++) {
-            this.noiseFilters[i] = new NoiseFilter(new SimplexNoise(prng), this.settings.planetLayers[i].noiseSettings);
+    public constructor(planet: PlanetMesh) {
+        this._radius = planet.radius;
+        this._layers = planet.terrainLayers;
+
+        const prng = Alea(planet.seed);
+        this._noiseFilters = [];
+        for (let i = 0; i < this._layers.length; i++) {
+            this._noiseFilters[i] = new NoiseFilter(new SimplexNoise(prng), this._layers[i].noiseSettings);
         }
     }
 
@@ -22,24 +28,24 @@ export class ShapeGenerator {
         let prevLayerValue = 0;
         let elevation = 0;
 
-        if (this.noiseFilters.length > 0) {
-            firstLayerValue = prevLayerValue = this.noiseFilters[0].Evaluate(pointOnUnitSphere);
-            if (this.settings.planetLayers[0].enabled) {
+        if (this._noiseFilters.length > 0) {
+            firstLayerValue = prevLayerValue = this._noiseFilters[0].Evaluate(pointOnUnitSphere);
+            if (this._layers[0].enabled) {
                 elevation = firstLayerValue;
             }
         }
 
-        for (let i = 1; i < this.noiseFilters.length; i++) {
-            if (this.settings.planetLayers[i].enabled) {
-                const mask = (this.settings.planetLayers[i].maskType === MaskTypes.FirstLayer && firstLayerValue > this.settings.planetLayers[0].noiseSettings.minValue) ? 1 :
-                    (this.settings.planetLayers[i].maskType === MaskTypes.PrevLayer && prevLayerValue > this.settings.planetLayers[i-1].noiseSettings.minValue) ? 1 : 
-                    (this.settings.planetLayers[i].maskType === MaskTypes.None) ? 1 : 0;
+        for (let i = 1; i < this._noiseFilters.length; i++) {
+            if (this._layers[i].enabled) {
+                const mask = (this._layers[i].maskType === MaskTypes.FirstLayer && firstLayerValue > this._layers[0].noiseSettings.minValue) ? 1 :
+                    (this._layers[i].maskType === MaskTypes.PrevLayer && prevLayerValue > this._layers[i-1].noiseSettings.minValue) ? 1 : 
+                    (this._layers[i].maskType === MaskTypes.None) ? 1 : 0;
 
-                prevLayerValue = this.noiseFilters[i].Evaluate(pointOnUnitSphere);
+                prevLayerValue = this._noiseFilters[i].Evaluate(pointOnUnitSphere);
                 elevation = Math.max(elevation, prevLayerValue * mask);
             }
         }
-        return pointOnUnitSphere.clone().multiplyScalar(Math.min(this.settings.radius, MAX_RENDER_RADIUS) * (1+elevation));
+        return pointOnUnitSphere.clone().multiplyScalar(Math.min(this._radius, MAX_RENDER_RADIUS) * (1+elevation));
     }
 }
 

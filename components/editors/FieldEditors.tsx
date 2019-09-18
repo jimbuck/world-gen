@@ -8,8 +8,6 @@ const sliderStyle = {
 };
 
 export function NumberSlider(props: { label: string, min: number, max: number, step: number, value: number, onChange: (value: number) => void }) {
-	const isInt = Number.isInteger(props.min) && Number.isInteger(props.max) && Number.isInteger(props.step);
-
 	return (
 		<Form.Group>
 			<Form.Label><strong>{props.label}:</strong> {props.value}</Form.Label>
@@ -18,7 +16,7 @@ export function NumberSlider(props: { label: string, min: number, max: number, s
 	);
 
 	function handleChange(e: any) {
-		const newValue = isInt ? parseInt(e.target.value, 10) : parseFloat(e.target.value);
+		const newValue = parseFloat(e.target.value);
 		props.onChange && props.onChange(newValue);
 	}
 }
