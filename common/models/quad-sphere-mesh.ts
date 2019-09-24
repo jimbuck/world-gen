@@ -88,4 +88,6 @@ export class QuadSphereMesh extends Mesh {
 
 		return geometry;
 	}
+	
+	public onBeforeRender = () => {};
 }

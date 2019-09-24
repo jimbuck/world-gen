@@ -27,9 +27,9 @@ export interface StateArray<T> {
  * @param initialValue The initial array value to use.
  */
 export function useStateArrayPersisted<T>(key: string, initialValue: T[] = []): StateArray<T> {
-    const [current, setArr] = useStatePersisted(key, initialValue);
+    const arr = useStatePersisted(key, initialValue);
 
-    return _useStateArrayLogic(current, setArr);
+    return _useStateArrayLogic(arr.current, arr.set);
 }
 
 /**

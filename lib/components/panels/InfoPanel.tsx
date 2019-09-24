@@ -9,7 +9,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
 
-import { PlanetReducer, PlanetEditorState } from '../../hooks/use-planet-reducer';
+import { PlanetEditorState } from '../../hooks/use-planet-reducer';
 import { randomSeed } from '../../../common/services/helpers';
 import { NumberSlider } from '../../../common/components/FieldEditors';
 

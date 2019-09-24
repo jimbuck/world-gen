@@ -19,6 +19,7 @@ export class PlanetMesh extends QuadSphereMesh {
 
     public name: string;
     public seed: string;
+    public rotate: boolean;
 
     public terrainLayers: PlanetLayer[] = [];
 
@@ -73,4 +74,10 @@ export class PlanetMesh extends QuadSphereMesh {
         });
         // console.log(`Min: ${min}, Max: ${max}`);
     }
+
+    public onBeforeRender = () => {
+        if (this.rotate) {
+            this.rotateY(Date.now() * 0.001);
+        }
+    };
 }

@@ -9,13 +9,13 @@ import Octicon, { Trashcan } from '@primer/octicons-react';
 import { NumberSlider, Vector2Slider, Vector3Slider} from '../../../common/components/FieldEditors';
 
 import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, NoiseSettings } from '../../models/planet-settings';
-import { PlanetReducer, PlanetEditorAction } from '../../hooks/use-planet-reducer';
+import { PlanetEditorDispatcher } from '../../hooks/use-planet-reducer';
 import { guid } from '../../../common/services/helpers';
 
-export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
+export default ({ planetState }: { planetState: PlanetEditorDispatcher }) => {
     return (
         <ListGroup as="ul" variant='flush'>
-            {planetReducer.planet.terrainLayers.map((layer, i) => (
+            {planetState.layers.current.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
                     <Form.Group>
                         <div className='d-flex mb-2'>
@@ -68,26 +68,18 @@ export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
 
     function addLayer(type: string) {
         return function () {
-            planetReducer.dispatch({
-                field: 'terrainLayers',
-                action: 'push',
-                value: {
-                    id: guid(),
-                    enabled: true,
-                    maskType: planetReducer.planet.terrainLayers.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
-                    noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
-                }
+            planetState.layers.push({
+                id: guid(),
+                enabled: true,
+                maskType: planetState.layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
+                noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
             });
         }
     }
 
     function removeLayer(index: number) {
         return function () {
-            planetReducer.dispatch({
-                field: 'terrainLayers',
-                action: 'removeAt',
-                value: index
-            });
+            planetState.layers.removeAt(index);
         }
     }
 
@@ -96,11 +88,7 @@ export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
 
         return function (value: any) {
             fields.noiseSettings[field] = value;
-            planetReducer.dispatch({
-                field: 'terrainLayers',
-                action: 'update',
-                value: { index, fields }
-            });
+            planetState.layers.update(index, fields);
         };
     }
 
@@ -118,11 +106,7 @@ export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
                     fields.maskType = e.target.value;
             }
 
-            planetReducer.dispatch({
-                field: 'terrainLayers',
-                action: 'update',
-                value: { index, fields }
-            });
+            planetState.layers.update(index, fields);
         };
     }
 }

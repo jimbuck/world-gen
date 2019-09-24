@@ -1,11 +1,16 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
+export interface StateDispatcher<T> {
+    current: T;
+    set: Dispatch<SetStateAction<T>>;
+}
+
 /**
  * Creates a state and setter function that persists to localStorage.
  * @param key The key to use for localStorage.
  * @param initialValue The initial value to use.
  */
-export default function useStatePersisted<T>(key: string, initialValue: T): [T, Dispatch<SetStateAction<T>>] {
+export default function useStatePersisted<T>(key: string, initialValue: T): StateDispatcher<T> {
     const [state, setState] = useState<T>(initialValue);
 
     function setLocalStorageState(value: T|((value: T) => T)) {
@@ -19,7 +24,7 @@ export default function useStatePersisted<T>(key: string, initialValue: T): [T, 
         setLocalStorageState(stateFromStorage);
     }, []);
 
-    return [state, setLocalStorageState];
+    return { current: state, set: setLocalStorageState };
 }
 
 function getFromLocalStorage<T>(key: string, defaultValue?: T): T {
