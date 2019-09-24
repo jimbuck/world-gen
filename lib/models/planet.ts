@@ -29,13 +29,7 @@ export class PlanetMesh extends QuadSphereMesh {
         }));
     }
 
-    public initialize()
-    {
-        this.regenerateMesh();
-        this.regenerateTerrain();
-        this.regenerateShading();
-    }
-
+    public shouldRegenerateTerrain: boolean;
     public regenerateTerrain() {
         const shapeGenerator = new ShapeGenerator(this);
         const geometry = this.geometry as Geometry;
@@ -45,6 +39,7 @@ export class PlanetMesh extends QuadSphereMesh {
         geometry.computeFaceNormals();
     }
 
+    public shouldRegenerateShading: boolean;
     public regenerateShading() {
         const faceMaterial = this.material as MeshPhongMaterial;
         faceMaterial.vertexColors = VertexColors;
@@ -73,9 +68,11 @@ export class PlanetMesh extends QuadSphereMesh {
         // console.log(`Min: ${min}, Max: ${max}`);
     }
 
-    public onBeforeRender = () => {
-        // if (this.rotate) {
-        //     this.rotateY(Date.now() * 0.00001);
-        // }
+    public update(deltaT: number) {
+        super.update(deltaT);
+
+        if (this.rotate) {
+            this.rotateY(deltaT / 50000000);
+        }
     };
 }

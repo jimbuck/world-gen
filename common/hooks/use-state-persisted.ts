@@ -21,6 +21,7 @@ export default function useStatePersisted<T>(key: string, initialValue: T): Stat
 
     useEffect(() => {
         const stateFromStorage = getFromLocalStorage<T>(key, initialValue);
+        console.log(`Loading '${key}' from storage... => ${stateFromStorage}`);
         setLocalStorageState(stateFromStorage);
     }, []);
 

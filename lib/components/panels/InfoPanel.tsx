@@ -1,8 +1,8 @@
 
-import { PlanetEditorDispatcher } from '../../hooks/use-planet-reducer';
+import { PlanetEditorState } from '../../hooks/use-planet-editor-state';
 import { NumberSlider, TextBox, SeedInput, ColorPicker } from '../../../common/components/FieldEditors';
 
-export default ({ planetState }: { planetState: PlanetEditorDispatcher }) => {
+export default ({ planetState }: { planetState: PlanetEditorState }) => {
 
     return (
         <>

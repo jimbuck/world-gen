@@ -35,7 +35,3 @@ export class EventEmitter {
 		}
 	}
 }
-
-export default function useEventEmitter() {
-	return new EventEmitter();
-}

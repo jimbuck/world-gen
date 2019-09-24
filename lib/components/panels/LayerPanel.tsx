@@ -9,10 +9,10 @@ import Octicon, { Trashcan } from '@primer/octicons-react';
 import { NumberSlider, Vector2Slider, Vector3Slider} from '../../../common/components/FieldEditors';
 
 import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, NoiseSettings } from '../../models/planet-settings';
-import { PlanetEditorDispatcher } from '../../hooks/use-planet-reducer';
+import { PlanetEditorState } from '../../hooks/use-planet-editor-state';
 import { guid } from '../../../common/services/helpers';
 
-export default ({ planetState }: { planetState: PlanetEditorDispatcher }) => {
+export default ({ planetState }: { planetState: PlanetEditorState }) => {
     return (
         <ListGroup as="ul" variant='flush'>
             {planetState.layers.current.map((layer, i) => (

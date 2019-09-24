@@ -2,7 +2,7 @@ import { Mesh, LineSegments, Material, Geometry, WireframeGeometry, LineBasicMat
 import { directionsList, Direction } from './direction';
 
 export class QuadSphereMesh extends Mesh {
-	public get radius() { return this.scale.x; }
+	public get radius() { return Math.pow(this.scale.x, 2); }
 	public set radius(value: number) {
 		value = Math.sqrt(value);
 		this.scale.set(value, value, value);
@@ -33,6 +33,7 @@ export class QuadSphereMesh extends Mesh {
 		this.regenerateMesh();
 	}
 
+	public shouldRegenerateMesh: boolean;
 	public regenerateMesh() {
 		this.geometry.dispose();
 		this.geometry = new Geometry();
@@ -89,5 +90,7 @@ export class QuadSphereMesh extends Mesh {
 		return geometry;
 	}
 	
-	public onBeforeRender = () => {};
+	public update(deltaT: number) {
+		
+	}
 }

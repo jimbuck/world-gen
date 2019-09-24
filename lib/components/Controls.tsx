@@ -10,7 +10,7 @@ import LayerPanel from './panels/LayerPanel';
 import InfoPanel from './panels/InfoPanel';
 
 import useStatePersisted from '../../common/hooks/use-state-persisted';
-import { PlanetEditorDispatcher } from '../hooks/use-planet-reducer';
+import { PlanetEditorState } from '../hooks/use-planet-editor-state';
 import GraphicsPanel from './panels/GraphicsPanel';
 
 const tabClasses = 'border-left border-right border-bottom';
@@ -20,7 +20,7 @@ const tabStyles = {
 	paddingRight: '6px'
 };
 
-export default ({ planetState }: { planetState: PlanetEditorDispatcher }) => {
+export default ({ planetState }: { planetState: PlanetEditorState }) => {
 	console.log(`Rendering Controls...`);
 	const tab = useStatePersisted('world-gen:active-tab', 'planet-info-tab');
 

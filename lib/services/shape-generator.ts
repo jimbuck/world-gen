@@ -16,7 +16,7 @@ export class ShapeGenerator {
         this._radius = planet.radius;
         this._layers = planet.terrainLayers;
 
-        const prng = Alea(planet.seed);
+        const prng = Alea(planet.seed || '');
         this._noiseFilters = [];
         for (let i = 0; i < this._layers.length; i++) {
             this._noiseFilters[i] = new NoiseFilter(new SimplexNoise(prng), this._layers[i].noiseSettings);

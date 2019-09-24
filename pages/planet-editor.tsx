@@ -2,12 +2,15 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import Layout from '../lib/components/Layout';
-import Display from '../lib/components/Display';
 import Controls from '../lib/components/Controls';
-import { usePlanetState } from '../lib/hooks/use-planet-reducer';
+import { usePlanetEditorState } from '../lib/hooks/use-planet-editor-state';
+import SceneDisplay from '../lib/components/SceneDisplay';
+import PlanetEditorSceneManager from '../lib/scenes/planet-editor-scene';
+
+const sceneManager = new PlanetEditorSceneManager();
 
 export default () => {
-	const planetState = usePlanetState();
+	const planetState = usePlanetEditorState(sceneManager.planet);
 
 	return typeof window === 'undefined' ? null : (
 		<Layout>
@@ -16,9 +19,9 @@ export default () => {
 					<h1>Planet Editor</h1>
 				</Col>
 			</Row>
-			<Row style={{ height: "" }}>
+			<Row style={{ height: '' }}>
 				<Col lg={6} xs={12} className="display">
-					<Display planet={planetState.planet} />
+					<SceneDisplay sceneManager={sceneManager} />
 				</Col>
 				<Col lg={6} xs={12} className="controls">
 					<Controls {...{ planetState }}  />
