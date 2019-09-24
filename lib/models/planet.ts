@@ -2,7 +2,7 @@
 import { MeshPhongMaterial, Geometry, Color, Vector3, VertexColors} from 'three';
 
 import { ShapeGenerator } from '../services/shape-generator';
-import { QuadSphereMesh } from './quad-sphere-mesh';
+import { QuadSphereMesh } from '../../common/models/quad-sphere-mesh';
 import { PlanetLayer } from './planet-settings';
 
 export class PlanetMesh extends QuadSphereMesh {

@@ -1,8 +1,9 @@
 import { useReducer, Dispatch } from 'react';
 import { PlanetMesh } from '../models/planet';
-import { randomSeed, guid } from '../services/helpers';
+import { randomSeed, guid } from '../../common/services/helpers';
 import { PlanetSettings, MaskTypes, createContinentNoise, PlanetLayer } from '../models/planet-settings';
 import { EditorSettings } from '../models/editor-settings';
+import { usePlanetEditorState } from './custom-state-persisted';
 
 const WORLDGEN_PLANET_EDITOR_SETTINGS = 'world-gen:planet-editor-settings';
 
@@ -31,6 +32,38 @@ export interface PlanetReducer {
 	planet: PlanetMesh;
 	settings: PlanetSettings;
 	dispatch: Dispatch<PlanetEditorAction>;
+}
+
+export function usePlanetState() {
+	const planet = new PlanetMesh();
+	const [name, saveName] = usePlanetEditorState('name', '');
+
+	return {
+		planet,
+		setName,
+		setColors,
+
+	};
+
+	function setName(name: string) {
+		planet.name = name;
+		saveName(name);
+	}
+
+	function setColors(colors: string) {
+		// TODO: Calculate colors.
+		planet.regenerateShading();
+	}
+
+	function setRadius(radius: number) {
+		planet.radius = radius;
+	}
+
+	function setSeed(seed: string) {
+		planet.seed = seed;
+		planet.regenerateTerrain();
+		planet.regenerateShading();
+	}
 }
 
 export default function usePlanetReducer(): PlanetReducer {
@@ -74,6 +107,7 @@ export default function usePlanetReducer(): PlanetReducer {
 		switch (action.field) {
 			case PlanetEditorFields.name:
 				planet.name = action.value;
+				break;
 			case PlanetEditorFields.color:
 				// TODO: Calculate colors.
 				planet.regenerateShading();
