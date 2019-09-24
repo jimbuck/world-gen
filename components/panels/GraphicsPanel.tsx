@@ -9,13 +9,6 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { SliderPicker } from 'react-color';
 import Octicon, { Sync } from '@primer/octicons-react';
 
-const controls = {
-	autoUpdateCheckbox: 'autoUpdateCheckbox',
-	wireframesCheckbox: 'wireframesCheckbox',
-	resolutionSlider: 'resolutionSlider',
-	rotateCheckbox: 'rotateCheckbox'
-};
-
 export default ({ autoUpdate, wireframes, resolution, rotate, handleFormChange }: {
 		autoUpdate: boolean,
 		wireframes: boolean,
@@ -26,17 +19,17 @@ export default ({ autoUpdate, wireframes, resolution, rotate, handleFormChange }
 
 		return (
 				<>
-						<Form.Group controlId={controls.autoUpdateCheckbox}>
+						<Form.Group>
 								<Form.Check type='checkbox' label='Auto Update' checked={autoUpdate} onChange={handleFormChange} />
 						</Form.Group>
-						<Form.Group controlId={controls.wireframesCheckbox}>
+						<Form.Group>
 								<Form.Check type='checkbox' label='Wireframes' checked={wireframes} onChange={handleFormChange} />
 						</Form.Group>
-						<Form.Group controlId={controls.resolutionSlider}>
+						<Form.Group>
 								<Form.Label>Resolution: {resolution}</Form.Label>
 								<Form.Control type="range" min={2} max={64} step={1} value={resolution+''} onChange={handleFormChange} />
 						</Form.Group>
-						<Form.Group controlId={controls.rotateCheckbox}>
+						<Form.Group>
 								<Form.Check type='checkbox' label='Rotate' checked={rotate} onChange={handleFormChange} />
 						</Form.Group>
 				</>
