@@ -1,11 +1,68 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Octicon, { Sync } from '@primer/octicons-react';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { Vector2, Vector3 } from 'three';
+
+import { randomSeed } from '../services/helpers';
+import { SliderPicker } from 'react-color';
 
 const sliderStyle = {
 	height: '24px'
 };
+
+export function TextBox(props: { label: string, value: string, onChange: (value: string) => void }) {
+	return (
+		<Form.Group>
+			<Form.Label><strong>{props.label}:</strong> {props.value + ''}</Form.Label>
+			<Form.Control type="text" value={props.value + ''} onChange={handleChange} />
+		</Form.Group>
+	);
+
+	function handleChange(e: any) {
+		props.onChange && props.onChange(e.target.value);
+	}
+}
+
+export function SeedInput(props: { label?: string, value: string, onChange: (value: string) => void }) {
+	return (
+		<Form.Group>
+			<Form.Label>{props.label || 'Seed'}:</Form.Label>
+				<InputGroup>
+						<Form.Control type="input" value={props.value + ''} onChange={handleChange} />
+						<InputGroup.Append>
+								<Button variant="outline-secondary" title='Randomize' onClick={handleRandomization}>
+										<Octicon icon={Sync} />
+								</Button>
+						</InputGroup.Append>
+				</InputGroup>
+		</Form.Group>
+	);
+
+	function handleRandomization() {
+		props.onChange && props.onChange(randomSeed());
+	}
+
+	function handleChange(e: any) {
+		props.onChange && props.onChange(e.target.value);
+	}
+}
+
+export function ColorPicker(props: { label: string, value: string, onChange: (value: string) => void }) {
+	
+	return (
+		<Form.Group>
+			<Form.Label>{props.label}: {props.value}</Form.Label>
+			<SliderPicker color={props.value} onChangeComplete={handleChange} />
+		</Form.Group>
+	);
+
+	function handleChange(e: any) {
+		props.onChange && props.onChange(e.hex.toUpperCase());
+	}
+}
 
 export function NumberSlider(props: { label: string, min: number, max: number, step: number, value: number, onChange: (value: number) => void }) {
 	return (
@@ -94,5 +151,18 @@ export function Vector3Slider({ label, min, max, step, value, onChange }: { labe
 				}
 			}
 		}
+	}
+}
+
+export function CheckboxInput(props: { label: string, value: boolean, onChange: (value: boolean) => void }) {
+	
+	return (
+		<Form.Group>
+			<Form.Check type='checkbox' label={props.label} checked={props.value} onChange={handleChange} />
+		</Form.Group>
+	);
+
+	function handleChange(e: any) {
+		props.onChange && props.onChange(e.target.checked);
 	}
 }

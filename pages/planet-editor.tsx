@@ -4,10 +4,10 @@ import Col from 'react-bootstrap/Col';
 import Layout from '../lib/components/Layout';
 import Display from '../lib/components/Display';
 import Controls from '../lib/components/Controls';
-import usePlanetReducer from '../lib/hooks/use-planet-reducer';
+import { usePlanetState } from '../lib/hooks/use-planet-reducer';
 
 export default () => {
-	const planetReducer = usePlanetReducer();
+	const planetState = usePlanetState();
 
 	return typeof window === 'undefined' ? null : (
 		<Layout>
@@ -18,10 +18,10 @@ export default () => {
 			</Row>
 			<Row style={{ height: "" }}>
 				<Col lg={6} xs={12} className="display">
-					<Display planetReducer={planetReducer} />
+					<Display planet={planetState.planet} />
 				</Col>
 				<Col lg={6} xs={12} className="controls">
-					<Controls planetReducer={planetReducer} />
+					<Controls {...{ planetState }}  />
 				</Col>
 			</Row>
 			<Row>

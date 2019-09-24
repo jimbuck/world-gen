@@ -5,10 +5,13 @@ import { EditorSettings } from '../models/editor-settings';
 import { usePlanetEditorState } from './custom-state-persisted';
 import { StateDispatcher } from '../../common/hooks/use-state-persisted';
 import { useStateArray, StateArray } from '../../common/hooks/use-state-array';
+import { useEffect } from 'react';
 
 export type PlanetEditorState = PlanetSettings & EditorSettings;
 
 export interface PlanetEditorDispatcher {
+	planet: PlanetMesh,
+
 	autoUpdate: StateDispatcher<boolean>;
 	name: StateDispatcher<string>;
 	colors: StateDispatcher<string>;
@@ -22,7 +25,9 @@ export interface PlanetEditorDispatcher {
 	rotate: StateDispatcher<boolean>;
 }
 
-export function usePlanetState(planet: PlanetMesh): PlanetEditorDispatcher {
+export function usePlanetState(): PlanetEditorDispatcher {
+	const planet = new PlanetMesh();
+
 	const autoUpdate = usePlanetEditorState('autoUpdate', true);
 	const name = usePlanetEditorState('name', '', value => {
 		if (autoUpdate) planet.name = value;
@@ -84,6 +89,8 @@ export function usePlanetState(planet: PlanetMesh): PlanetEditorDispatcher {
 	planet.rotate = rotate.current;
 
 	return {
+		planet,
+
 		autoUpdate,
 		name,
 		colors,

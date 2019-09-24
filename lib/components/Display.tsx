@@ -1,19 +1,19 @@
 
 import { useEffect, useRef } from 'react';
 import { WebGLRenderer, Scene, PerspectiveCamera, Color, AxesHelper, AmbientLight, DirectionalLight } from 'three';
-import { PlanetReducer } from '../hooks/use-planet-reducer';
+import { PlanetMesh } from '../models/planet';
 
-export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
+
+export default ({ planet }: { planet: PlanetMesh }) => {
     console.log(`Rendering Display...`);
-    let rotate = true;
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const initScene = (scene: Scene, renderer) => {
-        planetReducer.planet.initialize();
-        scene.add(planetReducer.planet);
+        planet.initialize();
+        scene.add(planet);
     };
 
     const updateScene = (deltaT: number, scene: Scene, renderer) => {
-        if(rotate) planetReducer.planet.rotation.y = deltaT * 0.5;
+        //if(rotate) planet.rotation.y = deltaT * 0.5;
     };
 
     useEffect(() => {
@@ -39,7 +39,7 @@ export default ({ planetReducer }: { planetReducer: PlanetReducer }) => {
 
         const directionalLight = new DirectionalLight('#efe8e9', 0.8)
         directionalLight.position.set(-1000, 0, 1000)
-        directionalLight.target = planetReducer.planet;
+        directionalLight.target = planet;
         scene.add(directionalLight);
 
         // Call user's callback for initialization

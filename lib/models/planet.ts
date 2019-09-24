@@ -6,7 +6,6 @@ import { QuadSphereMesh } from '../../common/models/quad-sphere-mesh';
 import { PlanetLayer } from './planet-settings';
 
 export class PlanetMesh extends QuadSphereMesh {
-    private shapeGenerator: ShapeGenerator;
 
     private _planetColor: string;
     public get planetColor() {
@@ -28,8 +27,6 @@ export class PlanetMesh extends QuadSphereMesh {
             color: '#f0f0f0',
             specular: '#222222'
         }));
-
-        this.shapeGenerator = new ShapeGenerator(this);
     }
 
     public initialize()
@@ -40,9 +37,10 @@ export class PlanetMesh extends QuadSphereMesh {
     }
 
     public regenerateTerrain() {
+        const shapeGenerator = new ShapeGenerator(this);
         const geometry = this.geometry as Geometry;
 
-        geometry.vertices = geometry.vertices.map(vertex => this.shapeGenerator.CalculatePointOnPlanet(vertex.normalize()).multiplyScalar(this.radius));
+        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex.normalize()).multiplyScalar(this.radius));
         geometry.computeVertexNormals();
         geometry.computeFaceNormals();
     }
@@ -76,8 +74,8 @@ export class PlanetMesh extends QuadSphereMesh {
     }
 
     public onBeforeRender = () => {
-        if (this.rotate) {
-            this.rotateY(Date.now() * 0.001);
-        }
+        // if (this.rotate) {
+        //     this.rotateY(Date.now() * 0.00001);
+        // }
     };
 }

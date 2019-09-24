@@ -1,6 +1,8 @@
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
+import Link from 'next/link';
+
 import Layout from '../lib/components/Layout';
 
 
@@ -15,6 +17,9 @@ export default () => {
             <Row>
                 <Col xs={6}>
                     Main menu...
+                    <Link href='/planet-editor'>
+                        <a>Planet Editor</a>
+                    </Link>
                 </Col>
             </Row>
             <Row>
