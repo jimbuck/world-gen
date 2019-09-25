@@ -48,7 +48,7 @@ export default class PlanetEditorSceneManager implements SceneManager {
 		this._renderer.setPixelRatio(window.devicePixelRatio);
 
 		this.camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 0.1, 1000);
-		this.camera.position.set(0, 0, 6);
+		this.camera.position.set(0, 0, 5);
 		this.camera.lookAt(0, 0, 0);
 	}
 

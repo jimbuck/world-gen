@@ -2,13 +2,6 @@ import { Mesh, LineSegments, Material, Geometry, WireframeGeometry, LineBasicMat
 import { directionsList, Direction } from './direction';
 
 export class QuadSphereMesh extends Mesh {
-	private _radius: number;
-	public get radius() { return this._radius; }
-	public set radius(value: number) {
-		this._radius = Math.max(0.5, value);
-		value = Math.sqrt(this._radius);
-		this.scale.set(value, value, value);
-	}
 
 	private _resolution: number;
 	public get resolution(): number { return this._resolution; }
@@ -22,10 +15,8 @@ export class QuadSphereMesh extends Mesh {
 		this._wireframes.visible = value;
 	}
 
-	public constructor(radius: number, resolution: number, material?: Material) {
+	public constructor(resolution: number = 32, material?: Material) {
 		super(new Geometry(), material);
-
-		this.radius = radius;
 		this.resolution = resolution;
 
 		this._wireframes = new LineSegments();
@@ -39,16 +30,18 @@ export class QuadSphereMesh extends Mesh {
 	public regenerateMesh() {
 		console.log(`Regenerating mesh...`);
 
-		this.geometry.dispose();
-		this.geometry = new Geometry();
+		let geometry = new Geometry();
 		directionsList.forEach(direction => {
-			(this.geometry as Geometry).merge(this.generateFaceGeometry(direction));
+			geometry.merge(this._generateFaceGeometry(direction));
 		});
 
 		// Merge the vertices into a single geometry (fixes edge creases).
-		this.geometry.mergeVertices();
-		this.geometry.computeFaceNormals();
-		this.geometry.computeVertexNormals();
+		geometry.mergeVertices();
+		geometry.computeFaceNormals();
+		geometry.computeVertexNormals();
+
+		this.geometry.dispose();
+		this.geometry = geometry;
 	}
 
 	protected regenerateWireframes() {
@@ -64,7 +57,7 @@ export class QuadSphereMesh extends Mesh {
 		wireframeMat.transparent = true;
 	}
 
-	private generateFaceGeometry(localUp: Direction) {
+	private _generateFaceGeometry(localUp: Direction) {
 		const axisA = new Vector3(localUp.vector.y, localUp.vector.z, localUp.vector.x);
 		const axisB = localUp.vector.clone().cross(axisA);
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 
 import { PlanetMesh } from '../models/planet';
 import { randomSeed, guid } from '../../common/services/helpers';
@@ -34,13 +34,15 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 	});
 
 	const radius = usePlanetEditorFieldState('radius', 1, value => {
-		planet.radius = Math.max(0.5, value);
+		planet.radius = value;
+		planet.regenerateTerrain();
+		planet.regenerateShading();
 		return planet.radius;
 	});
 
 	const colors = usePlanetEditorFieldState('colors', '#2D6086', value => {
 		planet.regenerateShading();
-		return colors;
+		return value;
 	});
 
 	const layers = useStateArray<PlanetLayer>([{
@@ -50,6 +52,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		noiseSettings: createContinentNoise()
 	}], value => {
 		planet.terrainLayers = value;
+		//planet.regenerateMesh();
 		planet.regenerateTerrain();
 		planet.regenerateShading();
 		return planet.terrainLayers;
@@ -73,7 +76,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		return planet.rotate;
 	});
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		console.log(`Setting initial planet settings...`);
 		planet.name = name.current;
 		planet.seed = seed.current;

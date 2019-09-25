@@ -6,6 +6,13 @@ import { QuadSphereMesh } from '../../common/models/quad-sphere-mesh';
 import { PlanetLayer } from './planet-settings';
 
 export class PlanetMesh extends QuadSphereMesh {
+    private _radius: number;
+    public get radius() {
+        return this._radius;
+    }
+    public set radius(value: number) {
+        this._radius = Math.max(0, value);
+    }
 
     private _planetColor: string;
     public get planetColor() {
@@ -16,27 +23,28 @@ export class PlanetMesh extends QuadSphereMesh {
         this.regenerateShading();
     }
 
-    public name: string;
     public seed: string;
     public rotate: boolean;
 
     public terrainLayers: PlanetLayer[] = [];
 
-    public constructor(resolution?: number) {
-        super(1, resolution || 32, new MeshPhongMaterial({
+    public constructor() {
+        super(32, new MeshPhongMaterial({
             color: '#f0f0f0',
             specular: '#222222'
         }));
     }
 
     public regenerateTerrain() {
-        console.log(`Regenerating terrain...`);
+        console.log(`Regenerating terrain with radius ${this.radius}...`);
         const shapeGenerator = new ShapeGenerator(this);
         const geometry = this.geometry as Geometry;
 
-        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex.normalize()));
-        geometry.computeVertexNormals();
+        geometry.vertices.forEach(vertex => shapeGenerator.CalculatePointOnPlanet(vertex));
         geometry.computeFaceNormals();
+        geometry.computeVertexNormals();
+        geometry.verticesNeedUpdate = true;
+        geometry.normalsNeedUpdate = true;
 
         this.regenerateWireframes();
     }
@@ -47,14 +55,11 @@ export class PlanetMesh extends QuadSphereMesh {
         faceMaterial.vertexColors = VertexColors;
         faceMaterial.color = new Color('#ffffff');// new Color(this.settings.color);
 
-        //let [min, max] = [9999, 0];
         const center = new Vector3(0,0,0);
         const geometry = this.geometry as Geometry;
         geometry.faces.forEach(face => {
-            const colors = [face.a, face.b, face.c].map(i => {
+            face.vertexColors =  [face.a, face.b, face.c].map(i => {
                 const dist = geometry.vertices[i].distanceTo(center) - this.radius;
-                // min = Math.min(min, dist);
-                // max = Math.max(max, dist);
                 if(dist > 0) {
                     // Land
                     return new Color('#008000');
@@ -64,10 +69,7 @@ export class PlanetMesh extends QuadSphereMesh {
                     return new Color('#000080');
                 }
             });
-
-            face.vertexColors = colors;
         });
-        // console.log(`Min: ${min}, Max: ${max}`);
     }
 
     public update(dT: number) {

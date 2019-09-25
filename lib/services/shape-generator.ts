@@ -2,15 +2,18 @@
 import { Vector3, Quaternion } from 'three';
 import Alea from 'alea';
 import SimplexNoise from 'simplex-noise';
+
 import { PlanetLayer, NoiseSettings, MaskTypes } from '../models/planet-settings';
 import { PlanetMesh } from '../models/planet';
 
 export class ShapeGenerator {
     private _noiseFilters: NoiseFilter[];
     private _layers: PlanetLayer[];
+    private _radius: number;
 
     public constructor(planet: PlanetMesh) {
         this._layers = planet.terrainLayers;
+        this._radius = planet.radius;
 
         const prng = Alea(planet.seed || '');
         this._noiseFilters = [];
@@ -19,10 +22,13 @@ export class ShapeGenerator {
         }
     }
 
-    public CalculatePointOnPlanet(pointOnUnitSphere: Vector3): Vector3 {
+    public CalculatePointOnPlanet(pointOnSphere: Vector3): Vector3 {
         let firstLayerValue = 0;
         let prevLayerValue = 0;
-        let elevation = 0;
+        let elevation = -1;
+        
+        pointOnSphere.normalize();
+        const pointOnUnitSphere: Vector3 = pointOnSphere.clone();
 
         if (this._noiseFilters.length > 0) {
             firstLayerValue = prevLayerValue = this._noiseFilters[0].Evaluate(pointOnUnitSphere);
@@ -41,7 +47,8 @@ export class ShapeGenerator {
                 elevation = Math.max(elevation, prevLayerValue * mask);
             }
         }
-        return pointOnUnitSphere.clone().multiplyScalar((1 + elevation));
+
+        return pointOnSphere.multiplyScalar(this._radius + elevation);
     }
 }
 
@@ -59,7 +66,7 @@ export class NoiseFilter {
         for (let i = 0; i < this.settings.octaves; i++) {
             let p = point.clone().multiplyScalar(frequency).add(this.settings.offset);
             p = p.applyQuaternion(q);
-            let v = (this.noise.noise3D(p.x/this.settings.strech.x, p.y/this.settings.strech.y, p.z/this.settings.strech.x));// + 1) / 2;
+            let v = (this.noise.noise3D(p.x/this.settings.strech.x, p.y/this.settings.strech.y, p.z/this.settings.strech.x));
             noiseValue += v * amplitude;
             frequency *= this.settings.roughness;
             amplitude *= this.settings.persistence;

@@ -4,7 +4,7 @@ import GitHubCorner from './GitHubCorner';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default (props) => {
+export default (props: {children: any[]}) => {
     return <>
         <Head>
             <title>WorldGen - Jim Buck</title>
