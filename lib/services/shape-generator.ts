@@ -5,15 +5,11 @@ import SimplexNoise from 'simplex-noise';
 import { PlanetLayer, NoiseSettings, MaskTypes } from '../models/planet-settings';
 import { PlanetMesh } from '../models/planet';
 
-const MAX_RENDER_RADIUS = 3;
-
 export class ShapeGenerator {
     private _noiseFilters: NoiseFilter[];
-    private _radius: number;
     private _layers: PlanetLayer[];
 
     public constructor(planet: PlanetMesh) {
-        this._radius = planet.radius;
         this._layers = planet.terrainLayers;
 
         const prng = Alea(planet.seed || '');
@@ -45,7 +41,7 @@ export class ShapeGenerator {
                 elevation = Math.max(elevation, prevLayerValue * mask);
             }
         }
-        return pointOnUnitSphere.clone().multiplyScalar(Math.min(this._radius, MAX_RENDER_RADIUS) * (1+elevation));
+        return pointOnUnitSphere.clone().multiplyScalar((1 + elevation));
     }
 }
 

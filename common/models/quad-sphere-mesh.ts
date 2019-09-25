@@ -2,9 +2,11 @@ import { Mesh, LineSegments, Material, Geometry, WireframeGeometry, LineBasicMat
 import { directionsList, Direction } from './direction';
 
 export class QuadSphereMesh extends Mesh {
-	public get radius() { return Math.pow(this.scale.x, 2); }
+	private _radius: number;
+	public get radius() { return this._radius; }
 	public set radius(value: number) {
-		value = Math.sqrt(value);
+		this._radius = Math.max(0.5, value);
+		value = Math.sqrt(this._radius);
 		this.scale.set(value, value, value);
 	}
 
@@ -31,10 +33,12 @@ export class QuadSphereMesh extends Mesh {
 		this.add(this._wireframes);
 
 		this.regenerateMesh();
+		this.regenerateWireframes();
 	}
 
-	public shouldRegenerateMesh: boolean;
 	public regenerateMesh() {
+		console.log(`Regenerating mesh...`);
+
 		this.geometry.dispose();
 		this.geometry = new Geometry();
 		directionsList.forEach(direction => {
@@ -45,14 +49,19 @@ export class QuadSphereMesh extends Mesh {
 		this.geometry.mergeVertices();
 		this.geometry.computeFaceNormals();
 		this.geometry.computeVertexNormals();
+	}
+
+	protected regenerateWireframes() {
+		console.log(`Regenerating wireframes...`);
 
 		// Build the wireframes
 		this._wireframes.geometry.dispose();
 		this._wireframes.geometry = new WireframeGeometry(this.geometry);
-		(this._wireframes.material as LineBasicMaterial).color = new Color(0x000000);
-		(this._wireframes.material as LineBasicMaterial).linewidth = 2;
-		(this._wireframes.material as LineBasicMaterial).opacity = 0.25;
-		(this._wireframes.material as LineBasicMaterial).transparent = true;
+		const wireframeMat = (this._wireframes.material as LineBasicMaterial);
+		wireframeMat.color = new Color(0x000000);
+		wireframeMat.linewidth = 2;
+		wireframeMat.opacity = 0.25;
+		wireframeMat.transparent = true;
 	}
 
 	private generateFaceGeometry(localUp: Direction) {

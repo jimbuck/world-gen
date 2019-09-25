@@ -9,7 +9,7 @@ import Tab from 'react-bootstrap/Tabs';
 import LayerPanel from './panels/LayerPanel';
 import InfoPanel from './panels/InfoPanel';
 
-import useStatePersisted from '../../common/hooks/use-state-persisted';
+import { useStatePersisted } from '../../common/hooks/use-state-persisted';
 import { PlanetEditorState } from '../hooks/use-planet-editor-state';
 import GraphicsPanel from './panels/GraphicsPanel';
 
@@ -21,8 +21,7 @@ const tabStyles = {
 };
 
 export default ({ planetState }: { planetState: PlanetEditorState }) => {
-	console.log(`Rendering Controls...`);
-	const tab = useStatePersisted('world-gen:active-tab', 'planet-info-tab');
+	const [tab, setTab] = useStatePersisted('world-gen:active-tab', 'planet-info-tab');
 
 	return (
 		<>
@@ -32,7 +31,7 @@ export default ({ planetState }: { planetState: PlanetEditorState }) => {
 			<Row>
 				<Col>
 					<Form autoComplete='off' data-lpignore="true">
-						<Tabs id='control-tabs' activeKey={tab.current} onSelect={tab.set} className='nav-fill' transition={false}>
+						<Tabs id='control-tabs' activeKey={tab} onSelect={setTab} className='nav-fill' transition={false}>
 							<Tab id='planet-info-tab' eventKey='planet-info-tab' title='Info' className={tabClasses} style={tabStyles} >
 								<InfoPanel {...{ planetState }} />
 							</Tab>

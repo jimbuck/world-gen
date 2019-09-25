@@ -11,6 +11,7 @@ export default class PlanetEditorSceneManager implements SceneManager {
 
 	private _renderer: THREE.WebGLRenderer;
 	private _handleAnimationFrame: (deltaT: number) => void;
+	private _prevT: number = 0;
 
 	constructor() {
 		this.scene = new THREE.Scene();
@@ -27,8 +28,10 @@ export default class PlanetEditorSceneManager implements SceneManager {
 		directionalLight.target = this.planet;
 		this.scene.add(directionalLight);
 
-		this._handleAnimationFrame = (deltaT) => {
-			this.planet.update(deltaT);
+		this._handleAnimationFrame = (t) => {
+			const dT = (t - this._prevT) / 1000;
+			this._prevT = t;
+			this.planet.update(dT);
 
 			this._renderer.render(this.scene, this.camera);
 		};

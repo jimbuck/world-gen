@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef } from 'react';
 import SceneManager from '../scenes/base-scene-manager';
 
 export default ({sceneManager}: {sceneManager: SceneManager}) => {
-    console.log(`Rendering SceneDisplay...`);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useLayoutEffect(() => {

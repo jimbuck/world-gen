@@ -15,8 +15,7 @@ export default () => {
                 </Col>
             </Row>
             <Row>
-                <Col xs={6}>
-                    Main menu...
+                <Col xs={12}>
                     <Link href='/planet-editor'>
                         <a>Planet Editor</a>
                     </Link>

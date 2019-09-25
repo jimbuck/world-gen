@@ -29,18 +29,20 @@ export class PlanetMesh extends QuadSphereMesh {
         }));
     }
 
-    public shouldRegenerateTerrain: boolean;
     public regenerateTerrain() {
+        console.log(`Regenerating terrain...`);
         const shapeGenerator = new ShapeGenerator(this);
         const geometry = this.geometry as Geometry;
 
-        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex.normalize()).multiplyScalar(this.radius));
+        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex.normalize()));
         geometry.computeVertexNormals();
         geometry.computeFaceNormals();
+
+        this.regenerateWireframes();
     }
 
-    public shouldRegenerateShading: boolean;
     public regenerateShading() {
+        console.log(`Regenerating shading...`);
         const faceMaterial = this.material as MeshPhongMaterial;
         faceMaterial.vertexColors = VertexColors;
         faceMaterial.color = new Color('#ffffff');// new Color(this.settings.color);
@@ -68,11 +70,11 @@ export class PlanetMesh extends QuadSphereMesh {
         // console.log(`Min: ${min}, Max: ${max}`);
     }
 
-    public update(deltaT: number) {
-        super.update(deltaT);
+    public update(dT: number) {
+        super.update(dT);
 
         if (this.rotate) {
-            this.rotateY(deltaT / 50000000);
+            this.rotateY(dT);
         }
     };
 }

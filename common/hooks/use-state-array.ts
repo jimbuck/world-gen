@@ -1,6 +1,6 @@
 import { useState, Dispatch, SetStateAction } from 'react';
 
-import useStatePersisted from './use-state-persisted';
+import { useStatePersisted } from './use-state-persisted';
 
 export interface StateArray<T> {
     current: T[];
@@ -25,52 +25,53 @@ export interface StateArray<T> {
  * Creates a state and setter function that persists the array to localStorage.
  * @param key The key to use for localStorage.
  * @param initialValue The initial array value to use.
+ * @param map An optional custom map function to modify.
  */
-export function useStateArrayPersisted<T>(key: string, initialValue: T[] = []): StateArray<T> {
-    const arr = useStatePersisted(key, initialValue);
+export function useStateArrayPersisted<T>(key: string, initialValue: T[] = [], map?: (newState: T[]) => T[]): StateArray<T> {
+    const [current, set] = useStatePersisted(key, initialValue);
 
-    return _useStateArrayLogic(arr.current, arr.set);
+    return _useStateArrayLogic(current, set, map);
 }
 
 /**
  * Creates a state and setter function for the array.
  * @param initialValue The initial value to use.
+ * @param map An optional custom map function to modify.
  */
-export function useStateArray<T>(initialValue: T[] = [], setter?: Dispatch<T[]>): StateArray<T> {
-    const [current, setArr] = useState(initialValue);
+export function useStateArray<T>(initialValue: T[] = [], map?: (newState: T[]) => T[]): StateArray<T> {
+    const [current, set] = useState(initialValue);
 
-    return _useStateArrayLogic(current, combinedSet);
-    
-    function combinedSet(arr: T[]) {
-        if (setter) setter(arr);
-        setArr(arr);
-    }
+    return _useStateArrayLogic(current, set, map);
 }
 
-function _useStateArrayLogic<T>(current: T[], setArr: Dispatch<SetStateAction<T[]>>): StateArray<T> {
-
+function _useStateArrayLogic<T>(current: T[], setArr: Dispatch<SetStateAction<T[]>>, map?: any): StateArray<T> {
     return {
         current,
         set(value: T[]) {
-            setArr(value);
+            mappedSet(value);
         },
         push(item: T) {
-            setArr([...current, item]);
+            mappedSet([...current, item]);
         },
         unshift(item: T) {
-            setArr([item, ...current]);
+            mappedSet([item, ...current]);
         },
         removeAt(index: number) {
-            setArr([...current.slice(0, index), ...current.slice(index + 1)]);
+            mappedSet([...current.slice(0, index), ...current.slice(index + 1)]);
         },
         removeWhere(predicate: (value: T, index: number, array: T[]) => value is T) {
-            setArr(current.filter(predicate));
+            mappedSet(current.filter(predicate));
         },
         clear() {
-            setArr([])
+            mappedSet([])
         },
         update(index: number, fields: Partial<T>) {
-            setArr([...current.slice(0, index), { ...current[index], ...fields }, ...current.slice(index + 1)]);
+            mappedSet([...current.slice(0, index), { ...current[index], ...fields }, ...current.slice(index + 1)]);
         }
     };
+
+    function mappedSet(arr: T[]) {
+        if (map) arr = map(arr);
+        setArr(arr);
+    }
 }
