@@ -33,7 +33,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		return planet.seed;
 	});
 
-	const radius = usePlanetEditorFieldState('radius', 1, value => {
+	const radius = usePlanetEditorFieldState('radius', 2, value => {
 		planet.radius = value;
 		planet.regenerateTerrain();
 		planet.regenerateShading();
@@ -63,7 +63,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		return planet.wireframes;
 	});
 
-	const resolution = usePlanetEditorFieldState('resolution', 32, value => {
+	const resolution = usePlanetEditorFieldState('resolution', 64, value => {
 		planet.resolution = Math.max(2, value);
 		planet.regenerateMesh();
 		planet.regenerateTerrain();

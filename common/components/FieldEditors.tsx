@@ -4,10 +4,13 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Octicon, { Sync } from '@primer/octicons-react';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Tooltip from 'rc-tooltip';
+import Slider from 'rc-slider';
 import { Vector2, Vector3 } from 'three';
 
+
 import { randomSeed } from '../services/helpers';
-import { SliderPicker } from 'react-color';
+import { SliderPicker as ColorSlider } from 'react-color';
 
 const sliderStyle = {
 	height: '24px'
@@ -55,7 +58,7 @@ export function ColorPicker(props: { label: string, value: string, onChange: (va
 	return (
 		<Form.Group>
 			<Form.Label>{props.label}: {props.value}</Form.Label>
-			<SliderPicker color={props.value} onChangeComplete={handleChange} />
+			<ColorSlider color={props.value} onChangeComplete={handleChange} />
 		</Form.Group>
 	);
 
@@ -68,14 +71,9 @@ export function NumberSlider(props: { label: string, min: number, max: number, s
 	return (
 		<Form.Group>
 			<Form.Label><strong>{props.label}:</strong> {props.value}</Form.Label>
-			<Form.Control type="range" min={props.min} max={props.max} step={props.step} value={props.value + ''} onChange={handleChange} style={sliderStyle} />
+			<Slider min={props.min} max={props.max} defaultValue={props.value} step={props.step} onChange={props.onChange} />
 		</Form.Group>
 	);
-
-	function handleChange(e: any) {
-		const newValue = parseFloat(e.target.value);
-		props.onChange && props.onChange(newValue);
-	}
 }
 
 export function Vector2Slider({ label, min, max, step, value, onChange }: { label: string, min: Vector2 | number, max: Vector2 | number, step?: Vector2 | number, value: Vector2, onChange: (value: Vector2) => void }) {
@@ -89,17 +87,20 @@ export function Vector2Slider({ label, min, max, step, value, onChange }: { labe
 		<Form.Label className='font-weight-bold mb-0'>{label}:</Form.Label>
 		<Row>
 			<Col xs={2}>X: {value.x}</Col>
-			<Col className='pl-0'><Form.Control type="range" min={vectorMin.x} max={vectorMax.x} step={vectorStep.x} value={value.x + ''} onChange={handleChange('x')} style={sliderStyle} /></Col>
+			<Col className='pl-0'>
+				<Slider min={vectorMin.x} max={vectorMax.x} defaultValue={value.x} step={vectorStep.x} onChange={handleChange('x')} />
+			</Col>
 		</Row>
 		<Row>
 			<Col xs={2}>Y: {value.y}</Col>
-			<Col className='pl-0'><Form.Control type="range" min={vectorMin.y} max={vectorMax.y} step={vectorStep.y} value={value.y + ''} onChange={handleChange('y')} style={sliderStyle} /></Col>
+			<Col className='pl-0'>
+				<Slider min={vectorMin.y} max={vectorMax.y} defaultValue={value.y} step={vectorStep.y} onChange={handleChange('y')} />
+			</Col>
 		</Row>
 	</Form.Group>);
 
 	function handleChange(part: 'x' | 'y') {
-		return (e: any) => {
-			const newValue = parseFloat(e.target.value);
+		return (newValue: number) => {
 			if (onChange) {
 				if (part === 'x') {
 					onChange(new Vector2(newValue, value.y));
@@ -122,21 +123,26 @@ export function Vector3Slider({ label, min, max, step, value, onChange }: { labe
 		<Form.Label className='font-weight-bold mb-0'>{label}:</Form.Label>
 		<Row>
 			<Col xs={2}>X: {value.x}</Col>
-			<Col className='pl-0'><Form.Control type="range" min={vectorMin.x} max={vectorMax.x} step={vectorStep.x} value={value.x + ''} onChange={handleChange('x')} style={sliderStyle} /></Col>
+			<Col className='pl-0'>
+				<Slider min={vectorMin.x} max={vectorMax.x} defaultValue={value.x} step={vectorStep.x} onChange={handleChange('x')} />
+			</Col>
 		</Row>
 		<Row>
 			<Col xs={2}>Y: {value.y}</Col>
-			<Col className='pl-0'><Form.Control type="range" min={vectorMin.y} max={vectorMax.y} step={vectorStep.y} value={value.y + ''} onChange={handleChange('y')} style={sliderStyle} /></Col>
+			<Col className='pl-0'>
+				<Slider min={vectorMin.y} max={vectorMax.y} defaultValue={value.y} step={vectorStep.y} onChange={handleChange('y')} />
+			</Col>
 		</Row>
 		<Row>
 			<Col xs={2}>Z: {value.z}</Col>
-			<Col className='pl-0'><Form.Control type="range" min={vectorMin.z} max={vectorMax.z} step={vectorStep.z} value={value.z + ''} onChange={handleChange('z')} style={sliderStyle} /></Col>
+			<Col className='pl-0'>
+				<Slider min={vectorMin.z} max={vectorMax.z} defaultValue={value.z} step={vectorStep.z} onChange={handleChange('z')} />
+			</Col>
 		</Row>
 	</Form.Group>);
 
 	function handleChange(part: 'x' | 'y' | 'z') {
-		return (e: any) => {
-			const newValue = parseFloat(e.target.value);
+		return (newValue: number) => {
 			if (onChange) {
 				switch (part) {
 					case 'x':

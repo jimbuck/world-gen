@@ -41,7 +41,7 @@ export function createContinentNoise() {
         octaves: 3,
         offset: new Vector3(0,0,0),
         minValue: -0.05,
-        strength: 0.1,
+        strength: 0.3,
         strech: new Vector2(0.7, 0.7),
         skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
