@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect } from 'react';
 
-import { PlanetMesh } from '../models/planet';
+import { PlanetMesh } from '../models/planet-mesh';
 import { randomSeed, guid } from '../../common/services/helpers';
 import { MaskTypes, createContinentNoise, PlanetLayer } from '../models/planet-settings';
 import { useStatePersisted } from '../../common/hooks/use-state-persisted';
@@ -76,7 +76,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		return planet.rotate;
 	});
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		console.log(`Setting initial planet settings...`);
 		planet.name = name.current;
 		planet.seed = seed.current;

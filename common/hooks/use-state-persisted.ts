@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+import { isClient, storage } from '../services/helpers';
 
 /**
  * Creates a state and setter function that persists to localStorage.
@@ -6,29 +8,31 @@ import { useState, useEffect } from 'react';
  * @param initialValue The initial value to use.
  */
 export function useStatePersisted<T>(key: string, initialValue: T): [T, (value: T) => void] {
-    const [state, setState] = useState<T>(initialValue);
-
-    function setLocalStorageState(value: T|((value: T) => T)) {
-        const valueToStore = value instanceof Function ? value(state) : value;
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        return setState(valueToStore);
+    if (!isClient) {
+        return [initialValue as T, () => { }];
     }
 
-    useEffect(() => {
-        const stateFromStorage = getFromLocalStorage<T>(key, initialValue);
-        console.log(`Loading '${key}' from storage... => ${stateFromStorage}`);
-        setLocalStorageState(stateFromStorage);
-    }, []);
+    const [state, setState] = useState<T>(getCached<T>(key, initialValue));
 
     return [state, setLocalStorageState];
-}
 
-function getFromLocalStorage<T>(key: string, defaultValue?: T): T {
-    try {
-        const item = window.localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue;
-    } catch (error) {
-        console.log(error);
-        return defaultValue;
+    function setLocalStorageState(value: T | ((value: T) => T)) {
+        if (value instanceof Function) {
+            setState(prev => {
+                const newState = value(prev);
+                return storage.local.set(key, newState);
+            });
+        } else {
+            storage.local.set(key, value);
+            setState(value);
+        }
     }
 }
+
+function getCached<T>(key: string, initialValue: T) {
+    const cached = storage.local.get<T>(key);
+    if(cached === null && initialValue !== null) {
+        storage.local.set(key, initialValue);
+    }
+    return cached !== null ? cached : initialValue;
+  }

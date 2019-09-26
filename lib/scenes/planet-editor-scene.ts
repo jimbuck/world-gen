@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import SceneManager from './base-scene-manager';
-import { PlanetMesh } from '../models/planet';
+import { PlanetMesh } from '../models/planet-mesh';
 
 export default class PlanetEditorSceneManager implements SceneManager {
 

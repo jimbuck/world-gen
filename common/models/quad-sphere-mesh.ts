@@ -28,7 +28,7 @@ export class QuadSphereMesh extends Mesh {
 	}
 
 	public regenerateMesh() {
-		console.log(`Regenerating mesh...`);
+		//console.log(`Regenerating mesh...`);
 
 		let geometry = new Geometry();
 		directionsList.forEach(direction => {
@@ -45,7 +45,7 @@ export class QuadSphereMesh extends Mesh {
 	}
 
 	protected regenerateWireframes() {
-		console.log(`Regenerating wireframes...`);
+		//console.log(`Regenerating wireframes...`);
 
 		// Build the wireframes
 		this._wireframes.geometry.dispose();
@@ -90,9 +90,5 @@ export class QuadSphereMesh extends Mesh {
 		geometry.faces = triangles;
 
 		return geometry;
-	}
-	
-	public update(deltaT: number) {
-		
 	}
 }

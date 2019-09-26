@@ -36,7 +36,7 @@ export class PlanetMesh extends QuadSphereMesh {
     }
 
     public regenerateTerrain() {
-        console.log(`Regenerating terrain with radius ${this.radius}...`);
+        //console.log(`Regenerating terrain with radius ${this.radius}...`);
         const shapeGenerator = new ShapeGenerator(this);
         const geometry = this.geometry as Geometry;
 
@@ -50,7 +50,7 @@ export class PlanetMesh extends QuadSphereMesh {
     }
 
     public regenerateShading() {
-        console.log(`Regenerating shading...`);
+        //console.log(`Regenerating shading...`);
         const faceMaterial = this.material as MeshPhongMaterial;
         faceMaterial.vertexColors = VertexColors;
         faceMaterial.color = new Color('#ffffff');// new Color(this.settings.color);
@@ -73,8 +73,6 @@ export class PlanetMesh extends QuadSphereMesh {
     }
 
     public update(dT: number) {
-        super.update(dT);
-
         if (this.rotate) {
             this.rotateY(dT);
         }

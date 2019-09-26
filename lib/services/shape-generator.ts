@@ -4,7 +4,7 @@ import Alea from 'alea';
 import SimplexNoise from 'simplex-noise';
 
 import { PlanetLayer, NoiseSettings, MaskTypes } from '../models/planet-settings';
-import { PlanetMesh } from '../models/planet';
+import { PlanetMesh } from '../models/planet-mesh';
 
 export class ShapeGenerator {
     private _noiseFilters: NoiseFilter[];

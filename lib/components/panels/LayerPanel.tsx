@@ -34,7 +34,7 @@ export default ({ planetState }: { planetState: PlanetEditorState }) => {
                     <NumberSlider label="Octaves" min={1} max={8} step={1} value={layer.noiseSettings.octaves} onChange={handleNoiseChange('octaves', layer, i)} />
                     <NumberSlider label="Persistence" min={0.1} max={2} step={0.05} value={layer.noiseSettings.persistence} onChange={handleNoiseChange('persistence', layer, i)} />
                     <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
-                    <NumberSlider label="Strength" min={0} max={4} step={0.1} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
+                    <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
                     <Vector2Slider label="Strech" min={0.1} max={10} step={0.1} value={layer.noiseSettings.strech} onChange={handleNoiseChange('strech', layer, i)} />
                     <Vector3Slider label="Offset" min={-10} max={10} step={0.1} value={layer.noiseSettings.offset} onChange={handleNoiseChange('offset', layer, i)} />
                     {i > 0 ? <Form.Group>
