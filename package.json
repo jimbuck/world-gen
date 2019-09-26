@@ -25,6 +25,8 @@
     "alea": "^1.0.0",
     "bootstrap": "^4.3.1",
     "next": "^9.0.5",
+    "rc-slider": "^8.7.1",
+    "rc-tooltip": "^3.7.3",
     "react": "^16.9.0",
     "react-bootstrap": "^1.0.0-beta.12",
     "react-color": "^2.17.3",
@@ -34,6 +36,8 @@
   },
   "devDependencies": {
     "@types/node": "^12.7.2",
+    "@types/rc-slider": "^8.6.5",
+    "@types/rc-tooltip": "^3.7.1",
     "@types/react": "^16.9.2",
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "^16.9.0",

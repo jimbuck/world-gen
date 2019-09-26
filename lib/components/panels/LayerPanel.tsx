@@ -6,16 +6,16 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Octicon, { Trashcan } from '@primer/octicons-react';
 
-import { NumberSlider, Vector2Slider, Vector3Slider} from '../editors/FieldEditors';
+import { NumberSlider, Vector2Slider, Vector3Slider} from '../../../common/components/FieldEditors';
 
 import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, NoiseSettings } from '../../models/planet-settings';
-import { StateArray } from '../../hooks/use-state-array';
-import { guid } from '../../services/helpers';
+import { PlanetEditorState } from '../../hooks/use-planet-editor-state';
+import { guid } from '../../../common/services/helpers';
 
-export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) => {
+export default ({ planetState }: { planetState: PlanetEditorState }) => {
     return (
         <ListGroup as="ul" variant='flush'>
-            {layers.current.map((layer, i) => (
+            {planetState.layers.current.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
                     <Form.Group>
                         <div className='d-flex mb-2'>
@@ -24,7 +24,7 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
                                 <Octicon icon={Trashcan} />
                             </Button>
                         </div>
-                        <Form.Control type="input" name='label' value={layer.label} onChange={handleLayerChange(layer, i)} />
+                        <Form.Control type="input" name='label' value='' onChange={handleLayerChange(layer, i)} />
                     </Form.Group>
                     <Form.Group>
                         <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
@@ -34,7 +34,7 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
                     <NumberSlider label="Octaves" min={1} max={8} step={1} value={layer.noiseSettings.octaves} onChange={handleNoiseChange('octaves', layer, i)} />
                     <NumberSlider label="Persistence" min={0.1} max={2} step={0.05} value={layer.noiseSettings.persistence} onChange={handleNoiseChange('persistence', layer, i)} />
                     <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
-                    <NumberSlider label="Strength" min={0} max={4} step={0.1} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
+                    <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
                     <Vector2Slider label="Strech" min={0.1} max={10} step={0.1} value={layer.noiseSettings.strech} onChange={handleNoiseChange('strech', layer, i)} />
                     <Vector3Slider label="Offset" min={-10} max={10} step={0.1} value={layer.noiseSettings.offset} onChange={handleNoiseChange('offset', layer, i)} />
                     {i > 0 ? <Form.Group>
@@ -68,11 +68,10 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
 
     function addLayer(type: string) {
         return function () {
-            layers.push({
+            planetState.layers.push({
                 id: guid(),
-                label: `${type} ${layers.current.length}`,
                 enabled: true,
-                maskType: layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
+                maskType: planetState.layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
                 noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()
             });
         }
@@ -80,37 +79,34 @@ export default ({ layers }: { seed: string, layers: StateArray<PlanetLayer> }) =
 
     function removeLayer(index: number) {
         return function () {
-            layers.removeAt(index);
+            planetState.layers.removeAt(index);
         }
     }
 
     function handleNoiseChange(field: keyof NoiseSettings, layer: PlanetLayer, index: number) {
-        let updatedLayer = { ...layer };
+        let fields = { ...layer };
 
         return function (value: any) {
-            layer.noiseSettings[field] = value;
-            layers.update(index, updatedLayer);
+            fields.noiseSettings[field] = value;
+            planetState.layers.update(index, fields);
         };
     }
 
     function handleLayerChange(layer: PlanetLayer, index: number) {
 
-        let updatedLayer = { ...layer };
+        let fields = { ...layer };
 
         return function (e: any) {
             //console.log(`${e.target.name} -> ${e.target.value}`);
             switch (e.target.name) {
-                case 'label':
-                    updatedLayer.label = e.target.value;
-                    break;
                 case 'enabled':
-                    updatedLayer.enabled = e.target.checked;
+                    fields.enabled = e.target.checked;
                     break;
                 case 'maskType':
-                    updatedLayer.maskType = e.target.value;
+                    fields.maskType = e.target.value;
             }
 
-            layers.update(index, updatedLayer);
+            planetState.layers.update(index, fields);
         };
     }
 }

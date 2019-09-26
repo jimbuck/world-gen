@@ -3,17 +3,13 @@ import { Vector3, Vector2 } from 'three';
 export interface PlanetSettings {
     name: string;
     seed: string;
-    resolution: number;
     radius: number;
-    wireframes: boolean;
-    rotate: boolean;
     color: string;
-    planetLayers: PlanetLayer[];
+    terrainLayers: PlanetLayer[];
 }
 
 export interface PlanetLayer {
     id?: string;
-    label: string;
     enabled: boolean;
     maskType: MaskTypes;
     noiseSettings?: NoiseSettings;
@@ -31,6 +27,12 @@ export interface NoiseSettings {
     skew: Vector3; // 0-1
 }
 
+export enum MaskTypes {
+    None = 'None',
+    FirstLayer = 'First Layer',
+    PrevLayer = 'Previous Layer'
+}
+
 export function createContinentNoise() {
     return {
         baseRoughness: 1.5,
@@ -39,7 +41,7 @@ export function createContinentNoise() {
         octaves: 3,
         offset: new Vector3(0,0,0),
         minValue: -0.05,
-        strength: 0.1,
+        strength: 0.3,
         strech: new Vector2(0.7, 0.7),
         skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
@@ -58,9 +60,3 @@ export function createMoutainNoise() {
         skew: new Vector3(0, 0, 0)
     } as NoiseSettings;
 };
-
-export enum MaskTypes {
-    None = 'None',
-    FirstLayer = 'First Layer',
-    PrevLayer = 'Previous Layer'
-}
