@@ -26,9 +26,6 @@ export default ({ planetState }: { planetState: PlanetEditorState }) => {
 	return (
 		<>
 			<Row>
-				<Col><h2>Controls</h2></Col>
-			</Row>
-			<Row>
 				<Col>
 					<Form autoComplete='off' data-lpignore="true">
 						<Tabs id='control-tabs' activeKey={tab} onSelect={setTab} className='nav-fill' transition={false}>
