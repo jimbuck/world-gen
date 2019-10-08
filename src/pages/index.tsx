@@ -4,9 +4,8 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import { useRouter } from 'next/router';
 
-import { isClient } from '../common/services/helpers';
+import { isClient, baseHref } from '../common/services/helpers';
 import Layout from '../lib/components/Layout';
-
 
 export default () => {
     const router = useRouter();
@@ -37,6 +36,6 @@ export default () => {
 
     function ListGroupMenuItem({label, href}: {label: string, href: string}) {
         if(isClient) router.prefetch(href);
-        return <ListGroup.Item action onClick={() => router.push(href)} className='text-center' >{label}</ListGroup.Item>
+        return <ListGroup.Item action onClick={() => router.push(href, baseHref + href)} className='text-center'>{label}</ListGroup.Item>
     }
 }

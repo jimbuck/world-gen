@@ -1,6 +1,7 @@
 
-
+export const EMPTY_STRING = '';
 export const isClient = typeof window === 'object';
+export const baseHref = isClient ? document.getElementsByTagName('base')[0].getAttribute('href') : EMPTY_STRING;
 
 export function guid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
