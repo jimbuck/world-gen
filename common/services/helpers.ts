@@ -1,7 +1,5 @@
 
 export const EMPTY_STRING = '';
-export const isClient = typeof window === 'object';
-export const baseHref = isClient ? document.getElementsByTagName('base')[0].getAttribute('href') : EMPTY_STRING;
 
 export function guid(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -18,7 +16,7 @@ export class StorageAdapter {
     private _storage: Storage;
 
     constructor(storage: 'localStorage'|'sessionStorage') {
-        this._storage = isClient ? window[storage] : null;
+        this._storage = process.browser ? window[storage] : null;
     }
 
     public get<T>(key: string, defaultValue: T = null): T {

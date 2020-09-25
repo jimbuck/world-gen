@@ -20,7 +20,7 @@ const tabStyles = {
 	paddingRight: '6px'
 };
 
-export default ({ planetState }: { planetState: PlanetEditorState }) => {
+export default function Controls ({ planetState }: { planetState: PlanetEditorState }) {
 	const [tab, setTab] = useStatePersisted('world-gen:active-tab', 'planet-info-tab');
 
 	return (

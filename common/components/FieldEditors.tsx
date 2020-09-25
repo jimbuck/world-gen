@@ -18,7 +18,7 @@ const sliderStyle = {
 
 export function TextBox(props: { label: string, value: string, onChange: (value: string) => void }) {
 	return (
-		<Form.Group>
+		<Form.Group as={Col}>
 			<Form.Label><strong>{props.label}:</strong> {props.value + ''}</Form.Label>
 			<Form.Control type="text" value={props.value + ''} onChange={handleChange} />
 		</Form.Group>
@@ -31,7 +31,7 @@ export function TextBox(props: { label: string, value: string, onChange: (value:
 
 export function SeedInput(props: { label?: string, value: string, onChange: (value: string) => void }) {
 	return (
-		<Form.Group>
+		<Form.Group as={Col}>
 			<Form.Label>{props.label || 'Seed'}:</Form.Label>
 				<InputGroup>
 						<Form.Control type="input" value={props.value + ''} onChange={handleChange} />
@@ -56,7 +56,7 @@ export function SeedInput(props: { label?: string, value: string, onChange: (val
 export function ColorPicker(props: { label: string, value: string, onChange: (value: string) => void }) {
 	
 	return (
-		<Form.Group>
+		<Form.Group as={Col}>
 			<Form.Label>{props.label}: {props.value}</Form.Label>
 			<ColorSlider color={props.value} onChangeComplete={handleChange} />
 		</Form.Group>
@@ -69,13 +69,14 @@ export function ColorPicker(props: { label: string, value: string, onChange: (va
 
 export function NumberSlider(props: { label: string, min: number, max: number, step: number, value: number, onChange: (value: number) => void }) {
 	return (
-		<Form.Group>
+		<Form.Group as={Col}>
 			<Form.Label><strong>{props.label}:</strong> {props.value}</Form.Label>
 			<Slider min={props.min} max={props.max} defaultValue={props.value} step={props.step} onChange={props.onChange} />
 		</Form.Group>
 	);
 }
 
+const VECTOR_LABEL_WIDTH = 3;
 export function Vector2Slider({ label, min, max, step, value, onChange }: { label: string, min: Vector2 | number, max: Vector2 | number, step?: Vector2 | number, value: Vector2, onChange: (value: Vector2) => void }) {
 	step = typeof step === 'undefined' ? 1 : step;
 
@@ -83,16 +84,16 @@ export function Vector2Slider({ label, min, max, step, value, onChange }: { labe
 	let vectorMax = typeof max === 'number' ? new Vector2(max, max) : max;
 	let vectorStep = typeof step === 'number' ? new Vector2(step, step) : step;
 
-	return (<Form.Group>
+	return (<Form.Group as={Col}>
 		<Form.Label className='font-weight-bold mb-0'>{label}:</Form.Label>
 		<Row>
-			<Col xs={2}>X: {value.x}</Col>
+			<Col xs={VECTOR_LABEL_WIDTH}><strong>X:</strong> {value.x}</Col>
 			<Col className='pl-0'>
 				<Slider min={vectorMin.x} max={vectorMax.x} defaultValue={value.x} step={vectorStep.x} onChange={handleChange('x')} />
 			</Col>
 		</Row>
 		<Row>
-			<Col xs={2}>Y: {value.y}</Col>
+			<Col xs={VECTOR_LABEL_WIDTH}><strong>Y:</strong> {value.y}</Col>
 			<Col className='pl-0'>
 				<Slider min={vectorMin.y} max={vectorMax.y} defaultValue={value.y} step={vectorStep.y} onChange={handleChange('y')} />
 			</Col>
@@ -119,22 +120,22 @@ export function Vector3Slider({ label, min, max, step, value, onChange }: { labe
 	let vectorMax = typeof max === 'number' ? new Vector3(max, max, max) : max;
 	let vectorStep = typeof step === 'number' ? new Vector3(step, step, step) : step;
 
-	return (<Form.Group>
+	return (<Form.Group as={Col}>
 		<Form.Label className='font-weight-bold mb-0'>{label}:</Form.Label>
 		<Row>
-			<Col xs={2}>X: {value.x}</Col>
+			<Col xs={VECTOR_LABEL_WIDTH}><strong>X:</strong> {value.x}</Col>
 			<Col className='pl-0'>
 				<Slider min={vectorMin.x} max={vectorMax.x} defaultValue={value.x} step={vectorStep.x} onChange={handleChange('x')} />
 			</Col>
 		</Row>
 		<Row>
-			<Col xs={2}>Y: {value.y}</Col>
+			<Col xs={VECTOR_LABEL_WIDTH}><strong>Y:</strong> {value.y}</Col>
 			<Col className='pl-0'>
 				<Slider min={vectorMin.y} max={vectorMax.y} defaultValue={value.y} step={vectorStep.y} onChange={handleChange('y')} />
 			</Col>
 		</Row>
 		<Row>
-			<Col xs={2}>Z: {value.z}</Col>
+			<Col xs={VECTOR_LABEL_WIDTH}><strong>Z:</strong> {value.z}</Col>
 			<Col className='pl-0'>
 				<Slider min={vectorMin.z} max={vectorMax.z} defaultValue={value.z} step={vectorStep.z} onChange={handleChange('z')} />
 			</Col>
@@ -163,7 +164,7 @@ export function Vector3Slider({ label, min, max, step, value, onChange }: { labe
 export function CheckboxInput(props: { label: string, value: boolean, onChange: (value: boolean) => void }) {
 	
 	return (
-		<Form.Group>
+		<Form.Group as={Col}>
 			<Form.Check type='checkbox' label={props.label} checked={props.value} onChange={handleChange} />
 		</Form.Group>
 	);

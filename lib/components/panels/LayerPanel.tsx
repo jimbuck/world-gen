@@ -1,4 +1,5 @@
 
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DropdownButton from 'react-bootstrap/DropdownButton';
@@ -12,31 +13,69 @@ import { PlanetLayer, MaskTypes, createContinentNoise, createMoutainNoise, Noise
 import { PlanetEditorState } from '../../hooks/use-planet-editor-state';
 import { guid } from '../../../common/services/helpers';
 
-export default ({ planetState }: { planetState: PlanetEditorState }) => {
+export default function LayerPanel({ planetState }: { planetState: PlanetEditorState }) {
     return (
         <ListGroup as="ul" variant='flush'>
             {planetState.layers.current.map((layer, i) => (
                 <ListGroup.Item as="li" key={layer.id} style={{backgroundColor: i % 2 === 0 ? '#f8f9fa' : null}}>
-                    <Form.Group>
-                        <div className='d-flex mb-2'>
-                            <Form.Label className='font-weight-bold'>Label:</Form.Label>
-                            <Button className='ml-auto btn-sm' variant='outline-danger' onClick={removeLayer(i)}>
-                                <Octicon icon={Trashcan} />
-                            </Button>
-                        </div>
-                        <Form.Control type="input" name='label' value='' onChange={handleLayerChange(layer, i)} />
-                    </Form.Group>
-                    <Form.Group>
+                    <Form.Row>
+                        <Form.Group as={Col}>
+                            <div className='d-flex mb-2'>
+                                <Form.Label className='font-weight-bold'>Label:</Form.Label>
+                                <Button className='ml-auto btn-sm' variant='outline-danger' onClick={removeLayer(i)}>
+                                    <Octicon icon={Trashcan} />
+                                </Button>
+                            </div>
+                            <Form.Control type="input" name='label' value='' onChange={handleLayerChange(layer, i)} />
+                        </Form.Group>
+                    </Form.Row>
+                    <Form.Row>
                         <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
-                    </Form.Group>
-                    <NumberSlider label="BaseRoughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.baseRoughness} onChange={handleNoiseChange('baseRoughness', layer, i)} />
-                    <NumberSlider label="Roughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.roughness} onChange={handleNoiseChange('roughness', layer, i)} />
-                    <NumberSlider label="Octaves" min={1} max={8} step={1} value={layer.noiseSettings.octaves} onChange={handleNoiseChange('octaves', layer, i)} />
-                    <NumberSlider label="Persistence" min={0.1} max={2} step={0.05} value={layer.noiseSettings.persistence} onChange={handleNoiseChange('persistence', layer, i)} />
-                    <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
-                    <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
-                    <Vector2Slider label="Strech" min={0.1} max={10} step={0.1} value={layer.noiseSettings.strech} onChange={handleNoiseChange('strech', layer, i)} />
-                    <Vector3Slider label="Offset" min={-10} max={10} step={0.1} value={layer.noiseSettings.offset} onChange={handleNoiseChange('offset', layer, i)} />
+                    </Form.Row>
+
+                    <Form.Row>
+                        <Form.Group as={Col}>
+                            <Form.Row>
+                                <NumberSlider label="Octaves" min={1} max={8} step={1} value={layer.noiseSettings.octaves} onChange={handleNoiseChange('octaves', layer, i)} />
+                            </Form.Row>
+                            <Form.Row>
+                                <NumberSlider label="Persistence" min={0.1} max={2} step={0.05} value={layer.noiseSettings.persistence} onChange={handleNoiseChange('persistence', layer, i)} />
+                            </Form.Row>
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Row>
+                                <NumberSlider label="BaseRoughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.baseRoughness} onChange={handleNoiseChange('baseRoughness', layer, i)} />
+                            </Form.Row>
+                            <Form.Row>
+                                <NumberSlider label="Roughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.roughness} onChange={handleNoiseChange('roughness', layer, i)} />
+                            </Form.Row>
+                        </Form.Group>
+
+                        <Form.Group as={Col}>
+                            <Form.Row>
+                                <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
+                            </Form.Row>
+                            <Form.Row>
+                                <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
+                            </Form.Row>
+                        </Form.Group>
+                    </Form.Row>
+                    
+                    {/* <Form.Row>
+                        <NumberSlider label="BaseRoughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.baseRoughness} onChange={handleNoiseChange('baseRoughness', layer, i)} />
+                        <NumberSlider label="Roughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.roughness} onChange={handleNoiseChange('roughness', layer, i)} />
+                    </Form.Row>
+
+                    <Form.Row>
+                        <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
+                        <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
+                    </Form.Row> */}
+
+                    <Form.Row>
+                        <Vector2Slider label="Strech" min={0.1} max={10} step={0.1} value={layer.noiseSettings.strech} onChange={handleNoiseChange('strech', layer, i)} />
+                        <Vector3Slider label="Offset" min={0.1} max={10} step={0.1} value={layer.noiseSettings.offset} onChange={handleNoiseChange('offset', layer, i)} />
+                    </Form.Row>
+                    
                     {i > 0 ? <Form.Group>
                         <Form.Label>Mask:</Form.Label>
                         <select name='maskType' className='form-control' value={layer.maskType} onChange={handleLayerChange(layer, i)}>

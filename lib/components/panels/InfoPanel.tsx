@@ -2,7 +2,7 @@
 import { PlanetEditorState } from '../../hooks/use-planet-editor-state';
 import { NumberSlider, TextBox, SeedInput, ColorPicker } from '../../../common/components/FieldEditors';
 
-export default ({ planetState }: { planetState: PlanetEditorState }) => {
+export default function InfoPanel({ planetState }: { planetState: PlanetEditorState }) {
 
     return (
         <>

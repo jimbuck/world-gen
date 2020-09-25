@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { isClient, storage } from '../services/helpers';
+import { storage } from '../services/helpers';
 
 /**
  * Creates a state and setter function that persists to localStorage.
@@ -8,7 +8,7 @@ import { isClient, storage } from '../services/helpers';
  * @param initialValue The initial value to use.
  */
 export function useStatePersisted<T>(key: string, initialValue: T): [T, (value: T) => void] {
-    if (!isClient) {
+    if (!process.browser) {
         return [initialValue as T, () => { }];
     }
 

@@ -71,7 +71,7 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		return planet.resolution;
 	});
 
-	const rotate = usePlanetEditorFieldState('rotate', true, value => {
+	const rotate = usePlanetEditorFieldState('rotate', 0.21, value => {
 		planet.rotate = value;
 		return planet.rotate;
 	});
@@ -121,5 +121,5 @@ export interface PlanetEditorState {
 
 	wireframes: StateInstance<boolean>;
 	resolution: StateInstance<number>;
-	rotate: StateInstance<boolean>;
+	rotate: StateInstance<number>;
 }

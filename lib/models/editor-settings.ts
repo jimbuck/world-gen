@@ -2,6 +2,6 @@
 export interface EditorSettings {
 	saveToStorage: boolean;
 	wireframes: boolean;
-	rotate: boolean;
+	rotate: number;
 	resolution: number;
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next",
-    "export": "next build && next export && touch out/.nojekyll"
+    "build": "next build && next export"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,9 @@
   "homepage": "https://github.com/jimbuck/world-gen#readme",
   "dependencies": {
     "@primer/octicons-react": "^9.1.1",
-    "@zeit/next-css": "^1.0.1",
     "alea": "^1.0.0",
     "bootstrap": "^4.3.1",
-    "next": "^9.5.0",
+    "next": "^9.5.3",
     "rc-slider": "^8.7.1",
     "rc-tooltip": "^3.7.3",
     "react": "^16.10.2",

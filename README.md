@@ -10,12 +10,12 @@
 ## Online - https://jimbuck.github.io/world-gen/
 
 ## Features
- - Compose multiple layers (solid, liquid, & gas) for complex and diverse planetary bodies.
- - Simulated mass, gravity, rotation, axis offsets and more.
- - Ability to export and import planet data.
- - Works on desktop, tablet, and mobile.
- - Built using Next.js, TypeScript, and three.js
- - Continuous Deployment via GitHub Actions.
+ - [x] Compose multiple layers (solid, liquid, & gas) for complex and diverse planetary bodies.
+ - [ ] Simulated mass, gravity, rotation, axis offsets and more.
+ - [ ] Ability to export and import planet data.
+ - [x] Works on desktop, tablet, and mobile.
+ - [x] Built using Next.js, TypeScript, and three.js
+ - [x] Continuous Deployment via Vercel's Now.
 
 ## Contribute
 

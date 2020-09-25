@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 
 import Layout from './Layout';
 
-export default ({header, children}: {header: string, children: any}) => {
+export default function SubPage ({header, children}: {header: string, children: any}) {
 
 	return (
 		<Layout>

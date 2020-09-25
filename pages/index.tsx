@@ -2,14 +2,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 
-import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
-import { isClient, baseHref } from '../common/services/helpers';
 import Layout from '../lib/components/Layout';
 
-export default () => {
-    const router = useRouter();
-
+export default function IndexPage() {
+    
     return (
         <Layout>
             <Row className='text-center'>
@@ -35,7 +33,8 @@ export default () => {
         </Layout>);
 
     function ListGroupMenuItem({label, href}: {label: string, href: string}) {
-        if(isClient) router.prefetch(href);
-        return <ListGroup.Item action onClick={() => router.push(href, baseHref + href)} className='text-center'>{label}</ListGroup.Item>
+        return <NextLink href={href} passHref>
+            <ListGroup.Item action className='text-center'>{label}</ListGroup.Item>
+        </NextLink>
     }
 }
