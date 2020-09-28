@@ -22,17 +22,16 @@ export default function LayerPanel({ planetState }: { planetState: PlanetEditorS
                         <Form.Group as={Col}>
                             <div className='d-flex mb-2'>
                                 <Form.Label className='font-weight-bold'>Label:</Form.Label>
-                                <Button className='ml-auto btn-sm' variant='outline-danger' onClick={removeLayer(i)}>
-                                    <Octicon icon={Trashcan} />
-                                </Button>
                             </div>
-                            <Form.Control type="input" name='label' value='' onChange={handleLayerChange(layer, i)} />
+                            <Form.Control type="input" name='label' value={layer.name} onChange={handleLayerChange(layer, i)} />
+                        </Form.Group>
+                        <Form.Group as={Col}>
+                            <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
+                            <Button className='ml-auto btn-sm' variant='outline-danger' onClick={removeLayer(i)}>
+                                    Delete <Octicon icon={Trashcan} />
+                                </Button>
                         </Form.Group>
                     </Form.Row>
-                    <Form.Row>
-                        <Form.Check type='checkbox' label='Enabled' name='enabled' checked={layer.enabled} onChange={handleLayerChange(layer, i)} />
-                    </Form.Row>
-
                     <Form.Row>
                         <Form.Group as={Col}>
                             <Form.Row>
@@ -60,17 +59,6 @@ export default function LayerPanel({ planetState }: { planetState: PlanetEditorS
                             </Form.Row>
                         </Form.Group>
                     </Form.Row>
-                    
-                    {/* <Form.Row>
-                        <NumberSlider label="BaseRoughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.baseRoughness} onChange={handleNoiseChange('baseRoughness', layer, i)} />
-                        <NumberSlider label="Roughness" min={0.1} max={5} step={0.1} value={layer.noiseSettings.roughness} onChange={handleNoiseChange('roughness', layer, i)} />
-                    </Form.Row>
-
-                    <Form.Row>
-                        <NumberSlider label="MinValue" min={-1} max={1} step={0.05} value={layer.noiseSettings.minValue} onChange={handleNoiseChange('minValue', layer, i)} />
-                        <NumberSlider label="Strength" min={0} max={4} step={0.05} value={layer.noiseSettings.strength} onChange={handleNoiseChange('strength', layer, i)} />
-                    </Form.Row> */}
-
                     <Form.Row>
                         <Vector2Slider label="Strech" min={0.1} max={10} step={0.1} value={layer.noiseSettings.strech} onChange={handleNoiseChange('strech', layer, i)} />
                         <Vector3Slider label="Offset" min={0.1} max={10} step={0.1} value={layer.noiseSettings.offset} onChange={handleNoiseChange('offset', layer, i)} />
@@ -109,6 +97,7 @@ export default function LayerPanel({ planetState }: { planetState: PlanetEditorS
         return function () {
             planetState.layers.push({
                 id: guid(),
+                name: '',
                 enabled: true,
                 maskType: planetState.layers.current.length === 0 ? MaskTypes.None : MaskTypes.FirstLayer,
                 noiseSettings: type === 'Continents' ? createContinentNoise() : createMoutainNoise()

@@ -1,5 +1,5 @@
 
-import { MeshPhongMaterial, Geometry, Color, Vector3, VertexColors} from 'three';
+import { MeshPhongMaterial, Geometry, Color, Vector3, VertexColors, MeshLambertMaterial} from 'three';
 
 import { ShapeGenerator } from '../services/shape-generator';
 import { QuadSphereMesh } from '../../common/models/quad-sphere-mesh';
@@ -14,37 +14,31 @@ export class PlanetMesh extends QuadSphereMesh {
         this._radius = Math.max(0, value);
     }
 
-    private _planetColor: string;
-    public get planetColor() {
-        return this._planetColor;
-    }
-    public set planetColor(value: string) {
-        this._planetColor = value;
-        this.regenerateShading();
-    }
+    public planetColor: string;
 
-    public seed: string;
-    public rotate: number;
+    private _seed: string;
+    public set seed(value: string) {
+        this._seed = value;
+    }
 
     public terrainLayers: PlanetLayer[] = [];
 
     public constructor() {
-        super(32, new MeshPhongMaterial({
-            color: '#f0f0f0',
-            specular: '#222222'
+        super(32, new MeshLambertMaterial({
+            color: '#f0f0f0'
         }));
     }
 
     public regenerateTerrain() {
-        //console.log(`Regenerating terrain with radius ${this.radius}...`);
-        const shapeGenerator = new ShapeGenerator(this);
+        const shapeGenerator = new ShapeGenerator(this.terrainLayers, this.radius, this._seed);
         const geometry = this.geometry as Geometry;
 
-        geometry.vertices.forEach(vertex => shapeGenerator.CalculatePointOnPlanet(vertex));
+        geometry.vertices = geometry.vertices.map(vertex => shapeGenerator.CalculatePointOnPlanet(vertex));
         geometry.computeFaceNormals();
         geometry.computeVertexNormals();
         geometry.verticesNeedUpdate = true;
         geometry.normalsNeedUpdate = true;
+        geometry.elementsNeedUpdate = true;
 
         this.regenerateWireframes();
     }
@@ -59,7 +53,7 @@ export class PlanetMesh extends QuadSphereMesh {
         const geometry = this.geometry as Geometry;
         geometry.faces.forEach(face => {
             face.vertexColors =  [face.a, face.b, face.c].map(i => {
-                const dist = geometry.vertices[i].distanceTo(center) - this.radius;
+                const dist = geometry.vertices[i].distanceTo(center) - (this.radius+this.terrainLayers[0].noiseSettings.minValue);
                 if(dist > 0) {
                     // Land
                     return new Color('#008000');
@@ -71,10 +65,4 @@ export class PlanetMesh extends QuadSphereMesh {
             });
         });
     }
-
-    public update(dT: number) {
-        if (!!this.rotate) {
-            this.rotateY(dT*this.rotate);
-        }
-    };
 }

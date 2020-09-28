@@ -4,8 +4,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 import SubPage from '../lib/components/SubPage';
 
-export default () => {
-
+export default function AboutPage() {
 	return (
 		<SubPage header='About'>
 			<Row>

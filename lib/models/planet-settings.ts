@@ -10,6 +10,7 @@ export interface PlanetSettings {
 
 export interface PlanetLayer {
     id?: string;
+    name: string;
     enabled: boolean;
     maskType: MaskTypes;
     noiseSettings?: NoiseSettings;

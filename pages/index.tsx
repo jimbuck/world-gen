@@ -19,8 +19,8 @@ export default function IndexPage() {
                 <Col xs={12} lg={{span: 4, offset: 4}}>
                 <ListGroup>
                     <ListGroupMenuItem label="Planet Editor" href="/planet-editor" />
-                    <ListGroupMenuItem label="Planet Generator" href="/planet-gen" />
-                    <ListGroupMenuItem label="Settings" href="/settings" />
+                    {/* <ListGroupMenuItem label="Planet Generator" href="/planet-gen" />
+                    <ListGroupMenuItem label="Settings" href="/settings" /> */}
                     <ListGroupMenuItem label="About" href="/about" />
                 </ListGroup>
                 </Col>

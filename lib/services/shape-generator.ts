@@ -4,18 +4,17 @@ import Alea from 'alea';
 import SimplexNoise from 'simplex-noise';
 
 import { PlanetLayer, NoiseSettings, MaskTypes } from '../models/planet-settings';
-import { PlanetMesh } from '../models/planet-mesh';
 
 export class ShapeGenerator {
     private _noiseFilters: NoiseFilter[];
     private _layers: PlanetLayer[];
     private _radius: number;
 
-    public constructor(planet: PlanetMesh) {
-        this._layers = planet.terrainLayers;
-        this._radius = planet.radius;
+    public constructor(layers: PlanetLayer[], radius: number, seed: string) {
+        this._layers = layers;
+        this._radius = radius;
 
-        const prng = Alea(planet.seed || '');
+        const prng = Alea(seed || '');
         this._noiseFilters = [];
         for (let i = 0; i < this._layers.length; i++) {
             this._noiseFilters[i] = new NoiseFilter(new SimplexNoise(prng), this._layers[i].noiseSettings);

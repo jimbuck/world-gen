@@ -32,7 +32,7 @@ export function TextBox(props: { label: string, value: string, onChange: (value:
 export function SeedInput(props: { label?: string, value: string, onChange: (value: string) => void }) {
 	return (
 		<Form.Group as={Col}>
-			<Form.Label>{props.label || 'Seed'}:</Form.Label>
+			<Form.Label><strong>{props.label || 'Seed'}:</strong></Form.Label>
 				<InputGroup>
 						<Form.Control type="input" value={props.value + ''} onChange={handleChange} />
 						<InputGroup.Append>

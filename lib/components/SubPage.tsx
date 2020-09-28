@@ -10,7 +10,7 @@ export default function SubPage ({header, children}: {header: string, children: 
 		<Layout>
 			<Row>
 				<Col>
-					<h1 className='display-4'>{header} <small><Link href="/"><a>Home</a></Link></small></h1>
+					<h1 className='display-4'><Link href="/"><a>&lsaquo;</a></Link> {header}</h1>
 				</Col>
 			</Row>
 			{children}

@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 
-import { PlanetMesh } from '../models/planet-mesh';
+import { Planet } from '../models/planet';
 import { randomSeed, guid } from '../../common/services/helpers';
 import { MaskTypes, createContinentNoise, PlanetLayer } from '../models/planet-settings';
 import { useStatePersisted } from '../../common/hooks/use-state-persisted';
 import { useStateArray, StateArray } from '../../common/hooks/use-state-array';
+
 
 export type StateInstance<T> = { current: T, set(value: T): void };
 
@@ -19,7 +20,7 @@ function usePlanetEditorFieldState<T>(key: string, initialValue: T, map?: (value
 	return { current, set: mappedSet };
 }
 
-export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
+export function usePlanetEditorState(planet: Planet): PlanetEditorState {
 
 	const name = usePlanetEditorFieldState('name', '', value => {
 		planet.name = value;
@@ -34,41 +35,56 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 	});
 
 	const radius = usePlanetEditorFieldState('radius', 2, value => {
-		planet.radius = value;
+		planet.surface.radius = value;
 		planet.regenerateTerrain();
 		planet.regenerateShading();
-		return planet.radius;
+		return planet.surface.radius;
+	});
+
+	const seaLevel = usePlanetEditorFieldState('seaLevel', 1, value => {
+		planet.sea.radius = value;
+		planet.sea.regenerateTerrain();
+		planet.sea.regenerateShading();
+		return planet.sea.radius;
+	});
+
+	const seaColor = usePlanetEditorFieldState('seaColor', '#0D1086', value => {
+		planet.sea.color = value;
+		planet.sea.regenerateShading();
+		return planet.sea.color;
 	});
 
 	const colors = usePlanetEditorFieldState('colors', '#2D6086', value => {
-		planet.regenerateShading();
+		planet.surface.regenerateShading();
 		return value;
 	});
 
 	const layers = useStateArray<PlanetLayer>([{
 		id: guid(),
+		name: '',
 		enabled: true,
 		maskType: MaskTypes.None,
 		noiseSettings: createContinentNoise()
 	}], value => {
-		planet.terrainLayers = value;
+		planet.surface.terrainLayers = value;
 		//planet.regenerateMesh();
-		planet.regenerateTerrain();
-		planet.regenerateShading();
-		return planet.terrainLayers;
+		planet.surface.regenerateTerrain();
+		planet.surface.regenerateShading();
+		return planet.surface.terrainLayers;
 	});
 
 	const wireframes = usePlanetEditorFieldState('wireframes', true, value => {
-		planet.wireframes = value;
-		return planet.wireframes;
+		planet.surface.wireframes = value;
+		return planet.surface.wireframes;
 	});
 
 	const resolution = usePlanetEditorFieldState('resolution', 64, value => {
-		planet.resolution = Math.max(2, value);
+		planet.surface.resolution = Math.max(2, value);
+		planet.sea.resolution = planet.surface.resolution * 2;
 		planet.regenerateMesh();
 		planet.regenerateTerrain();
 		planet.regenerateShading();
-		return planet.resolution;
+		return planet.surface.resolution;
 	});
 
 	const rotate = usePlanetEditorFieldState('rotate', 0.21, value => {
@@ -80,13 +96,16 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 		console.log(`Setting initial planet settings...`);
 		planet.name = name.current;
 		planet.seed = seed.current;
-		planet.radius = radius.current;
+		planet.surface.radius = radius.current;
 
-		planet.terrainLayers = layers.current;
+		planet.sea.radius = seaLevel.current;
+		planet.sea.color = seaColor.current;
+
+		planet.surface.terrainLayers = layers.current;
 
 		planet.rotate = rotate.current;
-		planet.resolution = resolution.current;
-		planet.wireframes = wireframes.current;
+		planet.surface.resolution = resolution.current;
+		planet.surface.wireframes = wireframes.current;
 
 		planet.regenerateMesh();
 		planet.regenerateTerrain();
@@ -94,11 +113,12 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 	}, []);
 
 	return {
-		planet,
-
 		name,
 		colors,
 		radius,
+		seaLevel,
+		seaColor,
+
 		seed,
 
 		layers,
@@ -110,12 +130,14 @@ export function usePlanetEditorState(planet: PlanetMesh): PlanetEditorState {
 }
 
 export interface PlanetEditorState {
-	planet: PlanetMesh,
-
 	name: StateInstance<string>;
+	seed: StateInstance<string>;
+
 	colors: StateInstance<string>;
 	radius: StateInstance<number>;
-	seed: StateInstance<string>;
+	
+	seaLevel: StateInstance<number>;
+	seaColor: StateInstance<string>;
 
 	layers: StateArray<PlanetLayer>,
 

@@ -1,13 +1,15 @@
 import * as THREE from 'three';
+import { OrbitControls } from '../../common/services/orbit-controls';
 
 import SceneManager from './base-scene-manager';
-import { PlanetMesh } from '../models/planet-mesh';
+import { Planet } from '../models/planet';
 
 export default class PlanetEditorSceneManager implements SceneManager {
 
-	public planet: PlanetMesh;
+	public planet: Planet;
 	public scene: THREE.Scene;
 	public camera: THREE.Camera;
+	public controls: OrbitControls;
 
 	private _renderer: THREE.WebGLRenderer;
 	private _handleAnimationFrame: (deltaT: number) => void;
@@ -16,8 +18,8 @@ export default class PlanetEditorSceneManager implements SceneManager {
 	constructor() {
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color('#000000');
-
-		this.planet = new PlanetMesh();
+		
+		this.planet = new Planet();
 		this.scene.add(this.planet);
 
 		const ambientLight = new THREE.AmbientLight('#ffffff', 0.15)
@@ -32,6 +34,7 @@ export default class PlanetEditorSceneManager implements SceneManager {
 			const dT = (t - this._prevT) / 1000;
 			this._prevT = t;
 			this.planet.update(dT);
+			this.controls.update();
 
 			this._renderer.render(this.scene, this.camera);
 		};
@@ -48,8 +51,12 @@ export default class PlanetEditorSceneManager implements SceneManager {
 		this._renderer.setPixelRatio(window.devicePixelRatio);
 
 		this.camera = new THREE.PerspectiveCamera(60, canvas.width / canvas.height, 0.1, 1000);
+
+		this.controls = new OrbitControls(this.camera, this._renderer.domElement);
+		
 		this.camera.position.set(0, 0, 5);
 		this.camera.lookAt(0, 0, 0);
+		this.controls.update();
 	}
 
 	public start() {
