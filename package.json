@@ -23,7 +23,7 @@
     "@primer/octicons-react": "^9.1.1",
     "alea": "^1.0.0",
     "bootstrap": "^4.3.1",
-    "next": "^9.5.3",
+    "next": "^9.5.4",
     "rc-slider": "^8.7.1",
     "rc-tooltip": "^3.7.3",
     "react": "^16.10.2",
