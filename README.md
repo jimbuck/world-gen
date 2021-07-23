@@ -15,7 +15,7 @@
  - [ ] Ability to export and import planet data.
  - [x] Works on desktop, tablet, and mobile.
  - [x] Built using Next.js, TypeScript, and three.js
- - [x] Continuous Deployment via Vercel's Now.
+ - [x] Continuous Deployment via the Vercel platform.
 
 ## Contribute
 
